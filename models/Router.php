@@ -17,14 +17,8 @@ class Router
         // Путь к файлу с роутами
         $routesPath = ROOT . '/config/routes.php';
 
-        $db = Db::getConnection();
-        $result = $db->query('SELECT * FROM routes');
-        $dbRoutes = $result->fetch();
-
-        $routes = array_merge($dbRoutes, include($routesPath));
-
         // Получаем роуты из файла
-        $this->routes = $routes;//include($routesPath);
+        $this->routes = include($routesPath);
     }
 
     /**
