@@ -9,7 +9,19 @@
 
 class Db
 {
+    private static $instance;
+    private $db;
+
     public static function getConnection()
+    {
+        if (self::$instance == null){
+            self::$instance = new Db();
+        }
+
+        return self::$instance;
+    }
+
+    private function __construct()
     {
         try {
             $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME;
