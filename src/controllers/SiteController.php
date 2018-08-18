@@ -12,7 +12,7 @@ namespace Angryjack\controllers;
 use Angryjack\models\Articles;
 
 
-class siteController
+class SiteController
 {
     /**
      * Отображаем главную страницу сайта

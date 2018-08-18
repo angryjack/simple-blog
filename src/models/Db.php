@@ -12,21 +12,24 @@ class Db
 {
     protected static $_instance;
 
-    private function __construct()
-    {
-    }
+    private function __construct(){}
 
     public static function getConnection()
     {
         if (self::$_instance === null) {
             self::$_instance = self::connect();
         }
+
         return self::$_instance;
     }
 
     private static function connect(){
-        $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME;
-        $connection = new PDO($dsn, DB_USER, DB_PASSWORD);
+
+        $paramsPath = ROOT . '/src/includes/db_params.php';
+        $params = include($paramsPath);
+
+        $dsn = "mysql:host={$params['host']};dbname={$params['dbname']}";
+        $connection = new PDO($dsn, $params['user'], $params['password']);
         $connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $connection->exec("set names utf8");
@@ -34,11 +37,7 @@ class Db
         return $connection;
     }
 
-    private function __clone()
-    {
-    }
+    private function __clone(){}
 
-    private function __wakeup()
-    {
-    }
+    private function __wakeup(){}
 }

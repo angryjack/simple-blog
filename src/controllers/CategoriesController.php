@@ -14,7 +14,7 @@ use Angryjack\models\Site;
  * Class categoriesController Котроллер категорий
  * @package Angryjack\controllers
  */
-class categoriesController
+class CategoriesController
 {
     /**
      * Получаем список категорий (клиентская часть)

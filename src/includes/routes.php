@@ -30,6 +30,6 @@ return array(
     'article/getArticles' => 'articles/getArticles',
     'article/search' => 'articles/search',
     'article/([0-9]+)' => 'site/article/$1',
-    '' => 'site/index',
+    '' => 'site/index'
 );
 

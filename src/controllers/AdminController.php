@@ -9,8 +9,18 @@ namespace Angryjack\controllers;
 use Angryjack\exceptions\BaseException;
 use Angryjack\models\Site;
 
-class adminController
+class AdminController
 {
+
+    /**
+     * Форма входа в админ панель
+     * @return bool
+     */
+    public function actionLogin()
+    {
+        require_once(ROOT . '/src/views/admin/login.php');
+        return true;
+    }
 
     /**
      * Метод входа в админ панель
@@ -30,16 +40,6 @@ class adminController
         }
 
         echo json_encode($result);
-        return true;
-    }
-
-    /**
-     * Форма входа в админ панель
-     * @return bool
-     */
-    public function actionLogin()
-    {
-        require_once(ROOT . '/src/views/admin/login.php');
         return true;
     }
 

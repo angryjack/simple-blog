@@ -1,8 +1,9 @@
 <?php
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-define('ROOT', __DIR__);
+/**
+ * Created by angryjack
+ * email angryj2ck@gmail.com
+ * Date: 18.08.2018 22:30
+ */
 
 spl_autoload_register(function ($class) {
 
@@ -10,7 +11,7 @@ spl_autoload_register(function ($class) {
     $prefix = 'Angryjack\\';
 
     // base directory for the namespace prefix
-    $base_dir = __DIR__ . '/src/';
+    $base_dir = __DIR__ . '/';
 
     // does the class use the namespace prefix?
     $len = strlen($prefix);
@@ -31,14 +32,4 @@ spl_autoload_register(function ($class) {
     if (file_exists($file)) {
         require $file;
     }
-});
-set_exception_handler(function (\Throwable $e) {
-    //file_put_contents('errors.txt', $e->getMessage() . PHP_EOL);
-    echo $e->getMessage();
-    echo $e->getFile();
-    echo $e->getLine();
-    //header('HTTP/1.1 503 Service Temporarily Unavailable');
-    //header('Status: 503 Service Temporarily Unavailable');
-    //header('Retry-After: 300');
-    //include 'src/views/site/error.php';
 });
