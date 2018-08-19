@@ -52,7 +52,7 @@ class InstallController
 
         // прописываем данные от бд в конфиг
         $config = new Install($this->data->host, $this->data->user, $this->data->password, $this->data->dbname);
-        $config->install();
+        $config->create();
 
         //делаем импорт в базу данных
         $db = new DbInstall($this->data->host, $this->data->user, $this->data->password, $this->data->dbname);
@@ -71,7 +71,8 @@ class InstallController
      * Удаляем папку установки
      */
     public function delete(){
-        $installDir = $_SERVER['DOCUMENT_ROOT'] . '/install';
+        $installDir = $_SERVER['DOCUMENT_ROOT'] . '/install/';
         Install::deleteInstallDir($installDir);
+
     }
 }

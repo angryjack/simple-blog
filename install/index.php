@@ -33,6 +33,9 @@ if (isset($data->action) && $data->action == 'check') {
         $result['text'] = 'Установка прошла успешно!';
     }
     catch (Exception $e){
+        // если что-то пошло не так - отменяем установку (удаляем созданный конфиг)
+        $run->delete();
+
         $result['status'] = 'error';
         $result['text'] = $e->getMessage();
     }

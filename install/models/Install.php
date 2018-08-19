@@ -27,23 +27,36 @@ class Install
      * Запись параметров Базы данных в файл
      * @throws Exception
      */
-    public function install()
+    public function create()
     {
         self::checkDbConfAlreadyExist();
 
-        $data = 'return array(';
-        $data .= " 'host' => '" . $this->host ."', ";
-        $data .= " 'dbname' => '" . $this->dbname . "', ";
-        $data .= " 'user' => '" . $this->user . "', ";
-        $data .= " 'password' => '" . $this->password . "' );";
+        $db_params = '<?php return array(';
+        $db_params .= " 'host' => '" . $this->host ."', ";
+        $db_params .= " 'dbname' => '" . $this->dbname . "', ";
+        $db_params .= " 'user' => '" . $this->user . "', ";
+        $db_params .= " 'password' => '" . $this->password . "' );";
 
         $installPath = $_SERVER['DOCUMENT_ROOT'] . '/src/includes/';
+
 
         if(!is_writable($installPath)){
             throw new Exception("Папка $installPath доступна только для чтения.");
         }
 
-        file_put_contents($installPath . 'db_params.php', $data);
+        file_put_contents($installPath . 'db_params.php', $db_params);
+    }
+
+    /**
+     * Удаление конфига
+     * @throws Exception
+     */
+    public function delete()
+    {
+        $dbParamsPath = $_SERVER['DOCUMENT_ROOT'] . '/src/includes/db_params.php';
+        if(!unlink($dbParamsPath)){
+            throw new Exception('Произошла ошибка при удалении конфигурации.');
+        }
     }
 
     /**
@@ -70,7 +83,7 @@ class Install
                     rmRec($path.DIRECTORY_SEPARATOR.$p);
                 return rmdir($path);
             }
-            return false;
+            throw new Exception("Произошла ошибка при удалении $path");
         }
     }
 }
