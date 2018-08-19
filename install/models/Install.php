@@ -86,4 +86,5 @@ class Install
             }
             throw new Exception("Произошла ошибка при удалении $path");
     }
+
 }

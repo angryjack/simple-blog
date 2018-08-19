@@ -5,6 +5,7 @@
  * Date: 30.06.2018 12:40
  */
 
+//todo значения по умолчанию
 if (!isset($title)) {
     $title = 'cnde.ru';
 }

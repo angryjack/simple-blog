@@ -7,6 +7,35 @@
 ?>
 <div class="articles">
     <div class="articles__container">
+
+        <?php foreach ($articles as $items => $article): ?>
+
+            <div class="article-block">
+                <a class="article-block__title" href="<?php
+                    if (isset($article->url)) {
+                        echo $article->url;
+                    } else {
+                        echo "/article/$article->id";
+                    }
+                    ?>">
+                    <?= substr($article->title, 0, 50); ?>
+                </a>
+                <div class="article-block__description">
+                    <?= htmlspecialchars( substr($article->content, 0, 240) ); ?>
+                </div>
+                <div class="article-block__footer">
+                    <div class="article-block__category">
+                        <?php if(isset($article->category)): ?>
+                            Категория: <?= substr($article->category, 0, 50); ?>
+                        <?php else: ?>
+                            Без категории
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+
+        <?php endforeach; ?>
+
         <div class="article-block" v-for="article in articles">
             <a class="article-block__title" :href="(article.url === null) ? '/article/' + article.id : article.url">{{article.title}}</a>
             <div class="article-block__description">{{ (article.content.length > 250) ? article.content.substr(0, 250) +
@@ -14,7 +43,9 @@
                 article.content}}
             </div>
             <div class="article-block__footer">
-                <div class="article-block__category">Категория: {{article.category}}</div>
+                <div class="article-block__category">
+                   {{ article.category === null ? 'Без категории' : 'Категория:' + article.category }}
+                </div>
             </div>
         </div>
     </div>
@@ -83,9 +114,6 @@
                     }).catch(function (error) {
                     });
                 }, 500),
-        },
-        created: function () {
-            this.getArticles();
         }
     })
 </script>

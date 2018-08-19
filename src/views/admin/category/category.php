@@ -35,11 +35,23 @@
         <div class="card-body">
             <div class="form-group">
                 <label for="category-title">Заголовок</label>
-                <input type="text" class="form-control" id="category-title" v-model="title">
+                <input type="text" name="category-title" class="form-control" v-model="title">
             </div>
             <div class="form-group">
-                <label for="category-body">Текст</label>
-                <textarea class="form-control" id="category-description" rows="10" v-model="description"></textarea>
+                <label for="category-content">Текст</label>
+                <textarea class="form-control" name="category-content" rows="10" v-model="content"></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="category-description">Описание</label>
+                    <input type="text" class="form-control" name="category-description"
+                           v-model="description">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="category-keywords">Ключевые слова</label>
+                    <input type="text" class="form-control" name="category-keywords" v-model="keywords">
+                </div>
             </div>
 
             <div class="form-row">
@@ -47,9 +59,9 @@
                     <label for="category-url">Короткая ссылка</label>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon3">https://site.ru/</span>
+                            <span class="input-group-text">https://site.ru/</span>
                         </div>
-                        <input type="text" class="form-control" id="aricle-url" aria-describedby="basic-addon3"
+                        <input type="text" class="form-control" name="category-url" aria-describedby="basic-addon3"
                                v-model="url">
                     </div>
                 </div>
@@ -136,7 +148,9 @@
                         category.create = false;
                         category.id = response.data.answer.data.id;
                         category.title = response.data.answer.data.title;
+                        category.content = response.data.answer.data.content;
                         category.description = response.data.answer.data.description;
+                        category.keywords = response.data.answer.data.keywords;
                         category.url = response.data.answer.data.url;
                     } else {
                         //response.data.answer.text
@@ -183,7 +197,9 @@
             isLoading: false,
             id: '',
             title: '',
+            content: '',
             description: '',
+            keywords: '',
             url: '',
             result: '',
         },
@@ -220,7 +236,9 @@
                     data: {
                         id: category.id,
                         title: category.title,
+                        content: category.content,
                         description: category.description,
+                        keywords: category.keywords,
                         url: category.url,
                         token: getCookie("token")
                     }
@@ -262,7 +280,9 @@
                 category.create = true;
                 category.id = '';
                 category.title = '';
+                category.content = '';
                 category.description = '';
+                category.keywords = '';
                 category.url = '';
             }
         }

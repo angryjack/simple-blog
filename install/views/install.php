@@ -34,18 +34,18 @@
             </div>
 
             <div class="form-group">
-                <label for="user">Пользователь:</label>
-                <input type="text" name="user" class="form-control" v-model="user">
+                <label for="db-user">Пользователь:</label>
+                <input type="text" name="db-user" class="form-control" v-model="dbUser">
             </div>
 
             <div class="form-group">
-                <label for="password">Пароль:</label>
-                <input type="password" name="password" class="form-control" v-model="password">
+                <label for="db-password">Пароль:</label>
+                <input type="password" name="db-password" class="form-control" v-model="dbPassword">
             </div>
 
             <div class="form-group">
-                <label for="dbname">База данных:</label>
-                <input type="text" name="dbname" class="form-control" v-model="dbname">
+                <label for="db-name">База данных:</label>
+                <input type="text" name="db-name" class="form-control" v-model="dbName">
             </div>
 
             <div class="form-group">
@@ -53,8 +53,19 @@
                 <button class="btn btn-success" @click="check">Проверить подключение</button>
             </div>
         </div>
-
         <div class="card-body" v-else-if="step === 2">
+            <div class="form-group">
+                <label for="user">Пользователь:</label>
+                <input type="text" name="host" class="form-control" v-model="user">
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" name="password" class="form-control" v-model="password">
+            </div>
+            <button class="btn btn-success" @click="createUser">Создать</button>
+        </div>
+
+        <div class="card-body" v-else-if="step === 3">
             <p>Установка прошла упешно.</p>
             <p>Теперь Вы можете удалить папку install</p>
             <button class="btn btn-danger" @click="this.delete">Удалить</button>
@@ -74,36 +85,12 @@
         data: {
             step: 1,
             host: 'localhost',
-            user: '',
-            password: '',
-            dbname: '',
+            dbUser: '',
+            dbPassword: '',
+            dbName: '',
             result: ''
         },
         methods: {
-            install: function () {
-                install.result = '';
-                if(!this.host || !this.user || !this.password || !this.dbname){
-                    this.result = "Заполните все обязательные поля!";
-                    return false;
-                }
-                axios({
-                    method: 'post',
-                    url: "/install/index.php",
-                    data: {
-                        action: 'install',
-                        host: this.host,
-                        user: this.user,
-                        password: this.password,
-                        dbname: this.dbname
-                    }
-                }).then(function (response) {
-                    if (response.data.status === "success") {
-                        install.step = 2;
-                    } else {
-                        install.result = response.data.text;
-                    }
-                }).catch(function (error) {});
-            },
             check: function () {
                 install.result = '';
                 if(!this.host || !this.user || !this.password || !this.dbname){
@@ -128,6 +115,33 @@
                     }
                 }).catch(function (error) {});
             },
+            install: function () {
+                install.result = '';
+                if(!this.host || !this.user || !this.password || !this.dbname){
+                    this.result = "Заполните все обязательные поля!";
+                    return false;
+                }
+                axios({
+                    method: 'post',
+                    url: "/install/index.php",
+                    data: {
+                        action: 'install',
+                        host: this.host,
+                        user: this.dbUser,
+                        password: this.dbPassword,
+                        dbname: this.dbName
+                    }
+                }).then(function (response) {
+                    if (response.data.status === "success") {
+                        install.step = 2;
+                    } else {
+                        install.result = response.data.text;
+                    }
+                }).catch(function (error) {});
+            },
+            user: function () {
+                install.result = '';
+            }
             delete: function () {
                 install.result = '';
                 axios({

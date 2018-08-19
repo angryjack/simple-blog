@@ -9,6 +9,7 @@
  * Контроллер пользовательской части сайта
  */
 namespace Angryjack\controllers;
+use Angryjack\exceptions\BaseException;
 use Angryjack\models\Articles;
 
 
@@ -20,23 +21,29 @@ class SiteController
      */
     public function actionIndex()
     {
-        $slider = ROOT . "/src/views/site/layouts/slider.php";
-        $main = ROOT . "/src/views/site/article/articles.php";
+        try{
+            $articles = Articles::getArticles();
+            $slider = ROOT . "/src/views/site/layouts/slider.php";
+            $main = ROOT . "/src/views/site/article/articles.php";
+        }
+        catch (BaseException $e){
+            $message = $e->getMessage();
+        }
         require_once(ROOT . '/src/views/site/index.php');
         return true;
     }
 
-    /**
-     * Страница со статьей
-     * @return bool
-     */
     public function actionArticle($id)
     {
-        $article = Articles::getArticle($id);
-
-        $title = $article->title;
-        $description = $article->description;
-        $keywords = $article->keywords;
+        try{
+            $article = Articles::getArticle($id);
+            $title = $article->title;
+            $description = $article->description;
+            $keywords = $article->keywords;
+        }
+        catch (BaseException $e){
+            $message = $e->getMessage();
+        }
 
         $slider = ROOT . "/src/views/site/layouts/slider.php";
         $main = ROOT . "/src/views/site/article/single.php";
@@ -44,12 +51,10 @@ class SiteController
         return true;
     }
 
-    /**
-     * Страница с категорией
-     * @return bool
-     */
-    public function actionCategory()
+    public function actionCategory($id)
     {
+        var_dump(Articles::getArticlesFromCategory($id, 1));
+        die;
         $category = null;
         $page = null;
         $articles = Articles::getArticlesFromCategory($category, $page);

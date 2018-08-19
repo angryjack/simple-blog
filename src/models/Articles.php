@@ -28,7 +28,7 @@ class Articles
             throw new BaseException('Не указана страница.');
         }
 
-        $limit = 20;
+        $limit = 4;
         $offset = ($page - 1) * $limit;
 
         $db = Db::getConnection();
@@ -43,6 +43,54 @@ class Articles
                 ORDER BY id DESC
                 LIMIT :limit OFFSET :offset';
         $stmt = $db->prepare($sql);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->setFetchMode(PDO::FETCH_OBJ);
+        $stmt->execute();
+        $articles = $stmt->fetchAll();
+
+        if(!$articles){
+            throw new BaseException('Статей нет.');
+        }
+
+        return $articles;
+    }
+
+    /**
+     * Выборка статей определенной категории
+     * @param $category
+     * @param $page
+     * @return array
+     * @throws BaseException
+     */
+    public static function getArticlesFromCategory($category, $page){
+        $page = intval($page);
+        $category = intval($category);
+
+        if(!$page){
+            throw new BaseException('Не указана страница.');
+        }
+        if(!$category){
+            throw new BaseException('Не указана категория');
+        }
+
+        $limit = 20;
+        $offset = ($page - 1) * $limit;
+
+        $db = Db::getConnection();
+        $sql = 'SELECT articles.id AS "id",
+                       articles.title AS "title",
+                       articles.content AS "content",
+                       categories.title AS "category",
+                       routes.url AS "url"
+                FROM articles
+                LEFT JOIN categories ON articles.category = categories.id
+                LEFT JOIN routes ON articles.link_id = routes.id
+                WHERE articles.category = :category
+                ORDER BY id DESC
+                LIMIT :limit OFFSET :offset';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':category', $category, PDO::PARAM_INT);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->setFetchMode(PDO::FETCH_OBJ);
@@ -414,8 +462,9 @@ class Articles
     }
 
     /**
-     * Метод подсчета кол-ва статей
-     * @return int общее кол-во статей
+     * Считаем общее кол-во статей
+     * @return int
+     * @throws \Exception
      */
     public static function countArticles()
     {

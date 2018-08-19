@@ -80,7 +80,9 @@ class CategoriesController
             }
 
             if ($data->title) {
-                if(Categories::createCategory($data->token, $data->title, $data->description, $data->url)){
+                if(Categories::createCategory($data->token, $data->title, $data->description,
+                    $data->meta_description, $data->meta_keywords, $data->url)){
+
                     $result['status'] = 'success';
                     $result['answer']['text'] = 'Новость упешно создана.';
                     $result['answer']['code'] = 'CATEGORY_CREATE_SUCCESS';
@@ -123,8 +125,8 @@ class CategoriesController
                     $data->url = false;
                 }
 
-                $editCategoryResult = Categories::editCategory($data->token, $data->id, $data->title, $data->description, $data->url);
-
+                $editCategoryResult = Categories::editCategory($data->token, $data->id, $data->title, $data->description,
+                    $data->meta_description, $data->meta_keywords, $data->url);
 
                 if ($editCategoryResult) {
                     $result['status'] = 'success';

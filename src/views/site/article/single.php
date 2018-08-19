@@ -8,7 +8,11 @@
 <div class="container__article">
 
     <div class="container__links">
-        <?= $article->category ?>
+        <?php if(isset($article->category)): ?>
+            Категория: <?= substr($article->category, 0, 50); ?>
+        <?php else: ?>
+            Без категории
+        <?php endif; ?>
     </div>
 
     <div class="container__text">

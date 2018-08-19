@@ -33,7 +33,7 @@ class Categories
         $db = Db::getConnection();
         $sql = 'SELECT categories.id AS "id",
                        categories.title AS "title",
-                       categories.description AS "description",                  
+                       categories.content AS "content",                  
                        routes.url AS "url"
                 FROM categories 
                 LEFT JOIN routes ON categories.link_id = routes.id
@@ -69,7 +69,9 @@ class Categories
         $db = Db::getConnection();
         $sql = 'SELECT categories.id AS "id",
                        categories.title AS "title",
+                       categories.content AS "content",
                        categories.description AS "description",
+                       categories.keywords AS "keywords",
                        routes.url AS "url"
                 FROM categories 
                 LEFT JOIN routes ON categories.link_id = routes.id
@@ -91,12 +93,14 @@ class Categories
      * Создание категории
      * @param $token
      * @param $title
+     * @param null $content
      * @param null $description
+     * @param null $keywords
      * @param null $url
      * @return bool
      * @throws BaseException
      */
-    public static function createCategory($token, $title, $description = null, $url = null)
+    public static function createCategory($token, $title, $content = null, $description = null, $keywords = null, $url = null)
     {
 
         if (!Site::checkAccess($token)) {
@@ -123,10 +127,12 @@ class Categories
         }
 
         $db = Db::getConnection();
-        $sql = 'INSERT INTO categories (title, description) VALUES (:title, :description)';
+        $sql = 'INSERT INTO categories (title, content, description, keywords) VALUES (:title, :content, :description, :keywords)';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+        $stmt->bindParam(':content', $content, PDO::PARAM_STR);
         $stmt->bindParam(':description', $description, PDO::PARAM_STR);
+        $stmt->bindParam(':keywords', $keywords, PDO::PARAM_STR);
         if ($stmt->execute()) {
             //если есть ссылка - то добавляем ее
             if ($url) {
@@ -160,12 +166,14 @@ class Categories
      * @param $token
      * @param $id
      * @param $title
+     * @param null $content
      * @param null $description
+     * @param null $keywords
      * @param null $url
      * @return bool
      * @throws BaseException
      */
-    public static function editCategory($token, $id, $title, $description = null, $url = null)
+    public static function editCategory($token, $id, $title, $content = null, $description = null, $keywords = null, $url = null)
     {
         if (!Site::checkAccess($token)) {
             throw new BaseException('Доступ запрещен.');
@@ -203,11 +211,13 @@ class Categories
 
         $db = Db::getConnection();
         $sql = 'UPDATE categories 
-                SET title = :title, description = :description
+                SET title = :title, content = :content, description = :description, keywords = :keywords
                 WHERE id = :id';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+        $stmt->bindParam(':content', $content, PDO::PARAM_STR);
         $stmt->bindParam(':description', $description, PDO::PARAM_STR);
+        $stmt->bindParam(':keywords', $keywords, PDO::PARAM_STR);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         if ($stmt->execute()) {
 
@@ -331,7 +341,6 @@ class Categories
         throw new BaseException('Произошла ошибка при удалении категории.');
     }
 
-
     /**
      * Поиск по категориям
      * @param $search
@@ -368,7 +377,6 @@ class Categories
         throw new BaseException('Подходящие категории не найдены.');
     }
 
-
     /**
      * Проверяем существование категории
      * @param $id - ID категории
@@ -398,8 +406,9 @@ class Categories
     }
 
     /**
-     * Метод подсчета кол-ва категорий
-     * @return int общее кол-во категорий
+     * Считаем общее кол-во статей
+     * @return int
+     * @throws \Exception
      */
     public static function countArticles()
     {

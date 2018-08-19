@@ -17,6 +17,11 @@
 
     <?php (!isset($aside)) ?: include($aside); ?>
 
+    <?php if(isset($message)):?>
+        <div class="container__slider" style="background: #ddd">
+            <?= $message; ?>
+        </div>
+    <?php endif; ?>
 </div>
 
 <?php include(ROOT . "/src/views/site/layouts/footer.php"); ?>
