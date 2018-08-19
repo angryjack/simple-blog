@@ -24,9 +24,10 @@
 
 <div class="container align-self-center d-flex justify-content-center">
     <div class="card" style="width: 40rem; margin: 40px 0" id="install-site">
-        <h5 class="card-header">Установка сайта:</h5>
-        <div class="card-body">
-
+        <div class="card-header d-flex justify-content-between">
+            <span>Установка сайта:</span><span>Шаг {{step}}</span>
+        </div>
+        <div class="card-body" v-if="step === 1">
             <div class="form-group">
                 <label for="host">Хост:</label>
                 <input type="text" name="host" class="form-control" v-model="host">
@@ -51,7 +52,17 @@
                 <button class="btn btn-primary" @click="install">Установить</button>
                 <button class="btn btn-success" @click="check">Проверить подключение</button>
             </div>
+        </div>
 
+        <div class="card-body" v-else-if="step === 2">
+            <p>Установка прошла упешно.</p>
+            <p>Теперь Вы можете удалить папку install</p>
+            <button class="btn btn-danger" @click="this.delete">Удалить</button>
+        </div>
+
+        <div class="card-body" v-else>step 3</div>
+
+        <div class="card-footer">
             <p class="card-text">{{result}}</p>
         </div>
     </div>
@@ -61,6 +72,7 @@
     let install = new Vue({
         el: '#install-site',
         data: {
+            step: 1,
             host: 'localhost',
             user: '',
             password: '',
@@ -85,9 +97,8 @@
                         dbname: this.dbname
                     }
                 }).then(function (response) {
-                    console.log(response);
                     if (response.data.status === "success") {
-                        document.location = "/";
+                        install.step = 2;
                     } else {
                         install.result = response.data.text;
                     }
@@ -110,9 +121,25 @@
                         dbname: this.dbname
                     }
                 }).then(function (response) {
-                    console.log(response);
                     if (response.data.status === "success") {
                         install.result = response.data.text;
+                    } else {
+                        install.result = response.data.text;
+                    }
+                }).catch(function (error) {});
+            },
+            delete: function () {
+                install.result = '';
+                axios({
+                    method: 'post',
+                    url: "/install/index.php",
+                    data: {
+                        action: 'delete'
+                    }
+                }).then(function (response) {
+                    console.log(response);
+                    if (response.data.status === "success") {
+                        document.location = "/";
                     } else {
                         install.result = response.data.text;
                     }

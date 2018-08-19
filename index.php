@@ -1,5 +1,5 @@
 <?php
-use Angryjack\Models\Router;
+use Angryjack\models\Router;
 
 require_once('config.php');
 

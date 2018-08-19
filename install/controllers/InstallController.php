@@ -29,6 +29,7 @@ class InstallController
 
     /**
      * Форма установки сайта
+     * @throws \Exception
      */
     public function index()
     {
@@ -39,6 +40,7 @@ class InstallController
 
     /**
      * Выполняем установку сайта
+     * @throws \Exception
      */
     public function install()
     {
@@ -65,4 +67,11 @@ class InstallController
         new DbInstall($this->data->host, $this->data->user, $this->data->password, $this->data->dbname);
     }
 
+    /**
+     * Удаляем папку установки
+     */
+    public function delete(){
+        $installDir = $_SERVER['DOCUMENT_ROOT'] . '/install';
+        Install::deleteInstallDir($installDir);
+    }
 }

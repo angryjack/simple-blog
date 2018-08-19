@@ -19,11 +19,7 @@ if (isset($data->action) && $data->action == 'check') {
         $result['status'] = 'success';
         $result['text'] = 'Подключение успешно установлено!';
     }
-    catch (BaseException $e){
-        $result['status'] = 'error';
-        $result['text'] = $e->getMessage();
-    }
-    catch (PDOException $e){
+    catch (Exception $e){
         $result['status'] = 'error';
         $result['text'] = $e->getMessage();
     }
@@ -36,17 +32,30 @@ if (isset($data->action) && $data->action == 'check') {
         $result['status'] = 'success';
         $result['text'] = 'Установка прошла успешно!';
     }
-    catch (BaseException $e){
+    catch (Exception $e){
         $result['status'] = 'error';
         $result['text'] = $e->getMessage();
     }
-    catch (PDOException $e){
+    echo json_encode($result);
+
+} else if (isset($data->action) && $data->action == 'delete') {
+    try{
+        $run = new InstallController();
+        $run->delete();
+        $result['status'] = 'success';
+    }
+    catch (Exception $e){
         $result['status'] = 'error';
         $result['text'] = $e->getMessage();
     }
     echo json_encode($result);
 
 } else {
-    $run = new InstallController();
-    $run->index();
+    try{
+        $run = new InstallController();
+        $run->index();
+    }
+    catch (Exception $e){
+        echo $e->getMessage();
+    }
 }

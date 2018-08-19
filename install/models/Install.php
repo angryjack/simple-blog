@@ -6,6 +6,8 @@
  */
 namespace Angryjack\models;
 
+use Exception;
+
 class Install
 {
     public $host;
@@ -21,6 +23,10 @@ class Install
         $this->dbname = $dbname;
     }
 
+    /**
+     * Запись параметров Базы данных в файл
+     * @throws Exception
+     */
     public function install()
     {
         self::checkDbConfAlreadyExist();
@@ -31,20 +37,32 @@ class Install
         $data .= " 'user' => '" . $this->user . "', ";
         $data .= " 'password' => '" . $this->password . "' );";
 
-        //todo обработать возможные ошибки
-        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/src/includes/db_params.php', $data);
+        $installPath = $_SERVER['DOCUMENT_ROOT'] . '/src/includes/';
 
+        if(!is_writable($installPath)){
+            throw new Exception("Папка $installPath доступна только для чтения.");
+        }
+
+        file_put_contents($installPath . 'db_params.php', $data);
     }
 
+    /**
+     * Проверяем установлен ли сайт
+     * @throws Exception
+     */
     public static function checkDbConfAlreadyExist()
     {
         $dbParamsPath = $_SERVER['DOCUMENT_ROOT'] . '/src/includes/db_params.php';
         if (file_exists($dbParamsPath)) {
-            die('Сайт уже установлен. Удалите папку install.');
+            throw new Exception('Сайт уже установлен. Удалите папку install.');
         }
     }
 
-    public function deleteInstallDir($path){
+    /**
+     * Удаление файлов после установки
+     * @param $path
+     */
+    public static function deleteInstallDir($path){
         function rmRec($path) {
             if (is_file($path)) return unlink($path);
             if (is_dir($path)) {
