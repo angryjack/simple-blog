@@ -73,6 +73,5 @@ class InstallController
     public function delete(){
         $installDir = $_SERVER['DOCUMENT_ROOT'] . '/install/';
         Install::deleteInstallDir($installDir);
-
     }
 }

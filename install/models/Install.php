@@ -72,18 +72,18 @@ class Install
     }
 
     /**
-     * Удаление файлов после установки
+     * Удаление папки установки
      * @param $path
+     * @return bool
+     * @throws Exception
      */
     public static function deleteInstallDir($path){
-        function rmRec($path) {
             if (is_file($path)) return unlink($path);
             if (is_dir($path)) {
                 foreach(scandir($path) as $p) if (($p!='.') && ($p!='..'))
-                    rmRec($path.DIRECTORY_SEPARATOR.$p);
+                    self::deleteInstallDir($path.DIRECTORY_SEPARATOR.$p);
                 return rmdir($path);
             }
             throw new Exception("Произошла ошибка при удалении $path");
-        }
     }
 }

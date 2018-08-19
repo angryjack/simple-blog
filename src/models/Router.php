@@ -75,7 +75,7 @@ class Router
 
                 $parameters = $segments;
 
-                $controllerName = 'Angryjack\Controllers\\' . $controllerName;
+                $controllerName = 'Angryjack\controllers\\' . $controllerName;
 
                 // Создать объект, вызвать метод (т.е. action)
                 $controllerObject = new $controllerName;
