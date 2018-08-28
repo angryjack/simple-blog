@@ -4,27 +4,33 @@
  * email angryj2ck@gmail.com
  * Date: 30.06.2018 12:40
  */
-
-//todo значения по умолчанию
-if (!isset($title)) {
-    $title = 'cnde.ru';
-}
-if (!isset($description)) {
-    $description = 'сайт cnde.ru';
-}
-if (!isset($keywords)) {
-    $keywords = 'cnde.ru';
-}
-
 ?>
 
 <!doctype html>
 <html lang="ru">
 <head>
-    <title><?= $title ?></title>
+    <title><?php
+                if (isset($title)) {
+                    echo $title;
+                } else {
+                    echo 'cnde.ru';
+                }
+            ?>
+    </title>
     <meta charset="utf-8">
-    <meta name="description" content="<?= $description ?>">
-    <meta name="keywords" content="<?= $keywords ?>">
+    <meta name="description" content="<?php
+                                            if (isset($description)) {
+                                                echo $description;
+                                            } else {
+                                                echo 'Сайт с заметками о php, mysql, js, css и linux';
+                                            }
+                                            ?>">
+    <meta name="keywords" content="<?php
+                                        if (isset($keywords)) {
+                                            echo $keywords;
+                                        } else {
+                                            echo 'Заметки по php; mysql; js; css; linux';
+                                        }?>">
     <meta name="author" content="angryjack">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.0/normalize.css">

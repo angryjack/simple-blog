@@ -12,6 +12,12 @@ use PDO;
 
 class Categories
 {
+    public $category;
+
+    public function __construct($category = false)
+    {
+        $this->category = $category;
+    }
 
     /**
      * Получаем категории
@@ -19,7 +25,7 @@ class Categories
      * @return array
      * @throws BaseException
      */
-    public static function getCategories($page = 1)
+    public function getCategories($page = 1)
     {
         $page = intval($page);
 
@@ -47,7 +53,7 @@ class Categories
         $categories = $stmt->fetchAll();
 
         if (!$categories) {
-            throw new BaseException('Категории нет.');
+            throw new BaseException('Категории не найдены.');
 
         }
 
@@ -60,7 +66,7 @@ class Categories
      * @return mixed
      * @throws BaseException
      */
-    public static function getCategory($id)
+    public function getCategory($id)
     {
         if (!$id) {
             throw new BaseException('Не указан id категории.');
@@ -83,7 +89,7 @@ class Categories
         $category = $stmt->fetch();
 
         if (!$category) {
-            throw new BaseException("Категории с $id ID не найдена.");
+            throw new BaseException("Категория с ID = $id не найдена.");
         }
 
         return $category;
@@ -100,23 +106,21 @@ class Categories
      * @return bool
      * @throws BaseException
      */
-    public static function createCategory($token, $title, $content = null, $description = null, $keywords = null, $url = null)
+    public function createCategory($token)
     {
 
         if (!Site::checkAccess($token)) {
             throw new BaseException('Доступ запрещен.');
         }
 
-        if (strlen($title) < 2) {
-            throw new BaseException('Слишком короткий заголовок.');
-        }
+        $this->validate();
 
         // если ЧПУ передан, проверяем, существует ли он
-        if ($url) {
+        if ($this->category->url) {
             $db = Db::getConnection();
             $sql = 'SELECT url FROM routes WHERE url = :url';
             $stmt = $db->prepare($sql);
-            $stmt->bindParam(':url', $url, PDO::PARAM_STR);
+            $stmt->bindParam(':url', $this->category->url, PDO::PARAM_STR);
             $stmt->setFetchMode(PDO::FETCH_OBJ);
             $stmt->execute();
             $check = $stmt->fetch();
@@ -129,18 +133,18 @@ class Categories
         $db = Db::getConnection();
         $sql = 'INSERT INTO categories (title, content, description, keywords) VALUES (:title, :content, :description, :keywords)';
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(':title', $title, PDO::PARAM_STR);
-        $stmt->bindParam(':content', $content, PDO::PARAM_STR);
-        $stmt->bindParam(':description', $description, PDO::PARAM_STR);
-        $stmt->bindParam(':keywords', $keywords, PDO::PARAM_STR);
+        $stmt->bindParam(':title', $this->category->title, PDO::PARAM_STR);
+        $stmt->bindParam(':content', $this->category->content, PDO::PARAM_STR);
+        $stmt->bindParam(':description', $this->category->description, PDO::PARAM_STR);
+        $stmt->bindParam(':keywords', $this->category->keywords, PDO::PARAM_STR);
         if ($stmt->execute()) {
             //если есть ссылка - то добавляем ее
-            if ($url) {
+            if ($this->category->url) {
                 $categoryId = $db->lastInsertId();
                 $internal_route = "site/category/$categoryId";
                 $sql = 'INSERT INTO routes (url, internal_route) VALUES (:url, :internal_route)';
                 $stmt = $db->prepare($sql);
-                $stmt->bindParam(':url', $url, PDO::PARAM_STR);
+                $stmt->bindParam(':url', $this->category->url, PDO::PARAM_STR);
                 $stmt->bindParam(':internal_route', $internal_route, PDO::PARAM_STR);
                 if ($stmt->execute()) {
                     // связываем ид ссылки и категорию
@@ -173,7 +177,7 @@ class Categories
      * @return bool
      * @throws BaseException
      */
-    public static function editCategory($token, $id, $title, $content = null, $description = null, $keywords = null, $url = null)
+    public function editCategory($token, $id)
     {
         if (!Site::checkAccess($token)) {
             throw new BaseException('Доступ запрещен.');
@@ -183,28 +187,26 @@ class Categories
             throw new BaseException('Не указан ID статьи.');
         }
 
-        if (strlen($title) < 2) {
-            throw new BaseException('Слишком короткий заголовок.');
-        }
-
         // проверяем существование категории перед ее редактированием
-        if (!self::checkCategoryExist($id)) {
+        if (!$this->checkCategoryExist($id)) {
             throw new BaseException("Категории с ID = $id не существует.");
         }
 
+        $this->validate();
+
         // если ЧПУ передан, проверяем, существует ли он
-        if ($url) {
+        if ($this->category->url) {
             $db = Db::getConnection();
             $sql = 'SELECT url FROM routes WHERE url = :url';
             $stmt = $db->prepare($sql);
-            $stmt->bindParam(':url', $url, PDO::PARAM_STR);
+            $stmt->bindParam(':url', $this->category->url, PDO::PARAM_STR);
             $stmt->setFetchMode(PDO::FETCH_OBJ);
             $stmt->execute();
             $check = $stmt->fetch();
 
             // если ссылка уже существует, но закреплена за другим элементом
             $category = self::getCategory($id);
-            if ($check && $category->url != $url) {
+            if ($check && $category->url != $this->category->url) {
                 throw new BaseException('Данная ссылка уже занята.');
             }
         }
@@ -214,10 +216,10 @@ class Categories
                 SET title = :title, content = :content, description = :description, keywords = :keywords
                 WHERE id = :id';
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(':title', $title, PDO::PARAM_STR);
-        $stmt->bindParam(':content', $content, PDO::PARAM_STR);
-        $stmt->bindParam(':description', $description, PDO::PARAM_STR);
-        $stmt->bindParam(':keywords', $keywords, PDO::PARAM_STR);
+        $stmt->bindParam(':title', $this->category->title, PDO::PARAM_STR);
+        $stmt->bindParam(':content', $this->category->content, PDO::PARAM_STR);
+        $stmt->bindParam(':description', $this->category->description, PDO::PARAM_STR);
+        $stmt->bindParam(':keywords', $this->category->keywords, PDO::PARAM_STR);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         if ($stmt->execute()) {
 
@@ -231,24 +233,24 @@ class Categories
             $linkCheckExist = $stmt->fetch();
 
             //если ссылка закреплена и новая ссылка передана выполняем UPDATE
-            if ($linkCheckExist->link_id != null && $url) {
+            if ($linkCheckExist->link_id != null && $this->category->url) {
 
                 $db = Db::getConnection();
                 $sql = 'UPDATE routes SET url = :url WHERE id = :id';
                 $stmt = $db->prepare($sql);
-                $stmt->bindParam(':url', $url, PDO::PARAM_STR);
+                $stmt->bindParam(':url', $this->category->url, PDO::PARAM_STR);
                 $stmt->bindParam(':id', $linkCheckExist->link_id, PDO::PARAM_INT);
                 $stmt->execute();
 
                 // если ссылка не существует, но новая ссылка была передана, выполняем INSERT в таблицу ссылок и связываем
                 // с таблицей категорий
-            } else if ($linkCheckExist->link_id == null && $url) {
+            } else if ($linkCheckExist->link_id == null && $this->category->url) {
 
                 $db = Db::getConnection();
                 $internal_route = "site/category/$id";
                 $sql = 'INSERT INTO routes (url, internal_route) VALUES (:url, :internal_route)';
                 $stmt = $db->prepare($sql);
-                $stmt->bindParam(':url', $url, PDO::PARAM_STR);
+                $stmt->bindParam(':url', $this->category->url, PDO::PARAM_STR);
                 $stmt->bindParam(':internal_route', $internal_route, PDO::PARAM_STR);
                 $stmt->execute();
                 $linkID = $db->lastInsertId();
@@ -260,7 +262,7 @@ class Categories
                 $stmt->execute();
 
                 // если ссылка существует, но новая ссылка не была передана, выполняем DELETE
-            } else if ($linkCheckExist->link_id != null && !$url) {
+            } else if ($linkCheckExist->link_id != null && !$this->category->url) {
 
                 // получить id существующей ссылки
                 // удалить существующую ссылку
@@ -291,7 +293,7 @@ class Categories
      * @return bool
      * @throws BaseException
      */
-    public static function deleteCategory($token, $id)
+    public function deleteCategory($token, $id)
     {
         if (!Site::checkAccess($token)) {
             throw new BaseException('Доступ запрещен.');
@@ -302,7 +304,7 @@ class Categories
         }
 
         // проверяем существование статьи перед ее редактированием
-        if (!self::checkCategoryExist($id)) {
+        if (!$this->checkCategoryExist($id)) {
             throw new BaseException("Категории с ID = $id не существует.");
         }
 
@@ -347,7 +349,7 @@ class Categories
      * @return array
      * @throws BaseException
      */
-    public static function searchCategories($search)
+    public function searchCategories($search)
     {
 
         if (strlen($search) < 2) {
@@ -383,7 +385,7 @@ class Categories
      * @return bool - true если категория существует, false - не существует
      * @throws BaseException
      */
-    public static function checkCategoryExist($id)
+    public function checkCategoryExist($id)
     {
 
         if (!$id) {
@@ -410,7 +412,7 @@ class Categories
      * @return int
      * @throws \Exception
      */
-    public static function countArticles()
+    public function countArticles()
     {
         $db = Db::getConnection();
         $result = $db->query('SELECT COUNT(*) FROM categories');
@@ -421,5 +423,13 @@ class Categories
         }
 
         return 0;
+    }
+
+    public function validate(){
+        $category = $this->category;
+
+        if (strlen($category->title) < 2) {
+            throw new BaseException('Слишком короткий заголовок.');
+        }
     }
 }

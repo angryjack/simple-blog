@@ -6,13 +6,13 @@
  */
 ?>
 
-<div class="container__slider" v-bind:style="background">
+<div class="slider__container" v-bind:style="background">
     {{title}}
 </div>
 
 <script>
     let slider = new Vue({
-        el: '.container__slider',
+        el: '.slider__container',
         data: {
             title: document.title,
             colors : [

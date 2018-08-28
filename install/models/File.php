@@ -8,41 +8,40 @@ namespace Angryjack\models;
 
 use Exception;
 
-class Install
+class File
 {
-    public $host;
-    public $user;
-    public $password;
-    public $dbname;
-
-    public function __construct($host, $user, $password, $dbname)
+    /**
+     * Проверяем существует ли конфиг БД
+     * @throws Exception
+     */
+    public function checkDbConfigExist()
     {
-        $this->host = $host;
-        $this->user = $user;
-        $this->password = $password;
-        $this->dbname = $dbname;
+        $dbParamsPath = $_SERVER['DOCUMENT_ROOT'] . '/src/includes/db_params.php';
+        if (file_exists($dbParamsPath)) {
+            throw new Exception('Сайт уже установлен. Удалите папку install.');
+        }
     }
 
     /**
-     * Запись параметров Базы данных в файл
+     * Создаем конфиг БД
+     * @param $db
      * @throws Exception
      */
-    public function create()
+    public function createDbConfigFile($db)
     {
-        self::checkDbConfAlreadyExist();
-
-        $db_params = '<?php return array(';
-        $db_params .= " 'host' => '" . $this->host ."', ";
-        $db_params .= " 'dbname' => '" . $this->dbname . "', ";
-        $db_params .= " 'user' => '" . $this->user . "', ";
-        $db_params .= " 'password' => '" . $this->password . "' );";
+        $this->checkDbConfigExist();
 
         $installPath = $_SERVER['DOCUMENT_ROOT'] . '/src/includes/';
-
 
         if(!is_writable($installPath)){
             throw new Exception("Папка $installPath доступна только для чтения.");
         }
+
+        $db_params = '<?php return array(';
+        $db_params .= " 'host' => '" . $db->host ."', ";
+        $db_params .= " 'dbname' => '" . $db->dbname . "', ";
+        $db_params .= " 'user' => '" . $db->user . "', ";
+        $db_params .= " 'password' => '" . $db->password . "' );";
 
         file_put_contents($installPath . 'db_params.php', $db_params);
     }
@@ -51,23 +50,11 @@ class Install
      * Удаление конфига
      * @throws Exception
      */
-    public function delete()
+    public function deleteDbConfigFile()
     {
         $dbParamsPath = $_SERVER['DOCUMENT_ROOT'] . '/src/includes/db_params.php';
         if(!unlink($dbParamsPath)){
             throw new Exception('Произошла ошибка при удалении конфигурации.');
-        }
-    }
-
-    /**
-     * Проверяем установлен ли сайт
-     * @throws Exception
-     */
-    public static function checkDbConfAlreadyExist()
-    {
-        $dbParamsPath = $_SERVER['DOCUMENT_ROOT'] . '/src/includes/db_params.php';
-        if (file_exists($dbParamsPath)) {
-            throw new Exception('Сайт уже установлен. Удалите папку install.');
         }
     }
 
@@ -77,7 +64,7 @@ class Install
      * @return bool
      * @throws Exception
      */
-    public static function deleteInstallDir($path){
+    public function deleteInstallDir($path){
             if (is_file($path)) return unlink($path);
             if (is_dir($path)) {
                 foreach(scandir($path) as $p) if (($p!='.') && ($p!='..'))

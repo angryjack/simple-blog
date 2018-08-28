@@ -29,7 +29,7 @@ class AdminController
     public function actionDoLogin()
     {
         try {
-            $data = Site::getData();
+            $data = Site::getData(false);
             $token = Site::login($data->login, $data->password);
             $result['status'] = 'success';
             $result['answer']['data'] = $token;

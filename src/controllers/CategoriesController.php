@@ -24,13 +24,16 @@ class CategoriesController
     public function actionGetCategories()
     {
         try {
-            $data = Site::getData();
+            $data = Site::getData(false);
             if ($data->page) {
                 $page = intval($data->page);
             } else {
                 $page = 1;
             }
-            $categories = Categories::getCategories($page);
+
+            $categoryManager = new Categories();
+            $categories = $categoryManager->getCategories($page);
+
             $result['status'] = 'success';
             $result['answer']['data'] = $categories;
         }
@@ -52,7 +55,10 @@ class CategoriesController
     {
         try {
             $data = Site::getData();
-            $category = Categories::getCategory($data->id);
+
+            $categoryManager = new Categories();
+            $category = $categoryManager->getCategory($data->id);
+
             $result['status'] = 'success';
             $result['answer']['data'] = $category;
         }
@@ -73,25 +79,19 @@ class CategoriesController
     public function actionAddCategory()
     {
         try {
-            $data = Site::getData();
+            $data = Site::getData(false);
 
             if (!Site::checkAccess($data->token)) {
                 throw new BaseException('Доступ запрещен.');
             }
 
-            if ($data->title) {
-                if(Categories::createCategory($data->token, $data->title, $data->description,
-                    $data->meta_description, $data->meta_keywords, $data->url)){
+            $categoryManager = new Categories($data);
+            $categoryManager->createCategory($data->token);
 
-                    $result['status'] = 'success';
-                    $result['answer']['text'] = 'Новость упешно создана.';
-                    $result['answer']['code'] = 'CATEGORY_CREATE_SUCCESS';
-                }
-            } else {
-                $result['status'] = 'error';
-                $result['answer']['text'] = 'Заполните все обязательные поля.';
-                $result['answer']['code'] = 'CATEGORY_EMPTY_FIELDS';
-            }
+            $result['status'] = 'success';
+            $result['answer']['text'] = 'Новость упешно создана.';
+            $result['answer']['code'] = 'CATEGORY_CREATE_SUCCESS';
+
         }
         catch (BaseException $e){
             $result['status'] = 'error';
@@ -115,31 +115,12 @@ class CategoriesController
                 throw new BaseException('Доступ запрещен.');
             }
 
-            if ($data->id && $data->title) {
+            $categoryManager = new Categories($data);
+            $categoryManager->editCategory($data->token, $data->id);
 
-                if(!isset($data->description)){
-                    $data->description = false;
-                }
-
-                if(!isset($data->url)){
-                    $data->url = false;
-                }
-
-                $editCategoryResult = Categories::editCategory($data->token, $data->id, $data->title, $data->description,
-                    $data->meta_description, $data->meta_keywords, $data->url);
-
-                if ($editCategoryResult) {
-                    $result['status'] = 'success';
-                    $result['answer']['text'] = 'Категория упешно отредактирована.';
-                    $result['answer']['code'] = 'CATEGORY_EDIT_SUCCESS';
-
-                } else {
-                    throw new BaseException('Произошла ошибка при редактировании категории.');
-                }
-
-            } else {
-                throw new BaseException('Заполните все обязательные поля.');
-            }
+            $result['status'] = 'success';
+            $result['answer']['text'] = 'Категория упешно отредактирована.';
+            $result['answer']['code'] = 'CATEGORY_EDIT_SUCCESS';
         }
         catch (BaseException $e){
             $result['status'] = 'error';
@@ -164,15 +145,12 @@ class CategoriesController
                 throw new BaseException('Доступ запрещен.');
             }
 
-            if ($data->id) {
-                Categories::deleteCategory($data->token, $data->id);
-                $result['status'] = 'success';
-                $result['answer']['text'] = 'Категория упешно удалена.';
-                $result['answer']['code'] = 'CATEGORY_DELETE_SUCCESS';
+            $categoryManager = new Categories();
+            $categoryManager->deleteCategory($data->token, $data->id);
 
-            } else {
-                throw new BaseException('Не указан ID категории.');
-            }
+            $result['status'] = 'success';
+            $result['answer']['text'] = 'Категория упешно удалена.';
+            $result['answer']['code'] = 'CATEGORY_DELETE_SUCCESS';
         }
         catch (BaseException $e){
             $result['status'] = 'error';
@@ -189,16 +167,11 @@ class CategoriesController
         try {
             $data = Site::getData();
 
-            if ($data->search) {
-                $categories = Categories::searchCategories($data->search);
+            $categoryManager = new Categories();
+            $categories = $categoryManager->searchCategories($data->search);
 
-                $result['status'] = 'success';
-                $result['answer']['data'] = $categories;
-
-            } else {
-                $result['status'] = 'error';
-                $result['answer']['text'] = 'Не заданы условия поиска.';
-            }
+            $result['status'] = 'success';
+            $result['answer']['data'] = $categories;
 
         } catch (BaseException $e) {
             $result['status'] = 'error';

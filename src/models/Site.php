@@ -13,13 +13,14 @@ use \PDO;
 class Site
 {
     /**
-     * Получаем все данные из POST и GET
+     * Получаем данные из POST
+     * @param bool $assoc тип возращаемого значения
      * @return mixed
      */
-    public static function getData()
+    public static function getData($assoc = false)
     {
         $data = file_get_contents('php://input');
-        return json_decode($data);
+        return json_decode($data, $assoc);
     }
 
     /**
@@ -98,6 +99,7 @@ class Site
      * Метод проверки уровня доступа
      * @param $token - токен пользователя
      * @return bool - результат проверки прав
+     * @throws
      */
     public static function checkAccess($token)
     {

@@ -56,11 +56,11 @@
         <div class="card-body" v-else-if="step === 2">
             <div class="form-group">
                 <label for="user">Пользователь:</label>
-                <input type="text" name="host" class="form-control" v-model="user">
+                <input type="text" name="user-login" class="form-control" v-model="userLogin">
             </div>
             <div class="form-group">
                 <label for="password">Пароль:</label>
-                <input type="password" name="password" class="form-control" v-model="password">
+                <input type="password" name="user-password" class="form-control" v-model="userPassword">
             </div>
             <button class="btn btn-success" @click="createUser">Создать</button>
         </div>
@@ -88,6 +88,8 @@
             dbUser: '',
             dbPassword: '',
             dbName: '',
+            userLogin: '',
+            userPassword: '',
             result: ''
         },
         methods: {
@@ -117,7 +119,7 @@
             },
             install: function () {
                 install.result = '';
-                if(!this.host || !this.user || !this.password || !this.dbname){
+                if(!this.host || !this.dbUser || !this.dbPassword || !this.dbName){
                     this.result = "Заполните все обязательные поля!";
                     return false;
                 }
@@ -139,8 +141,27 @@
                     }
                 }).catch(function (error) {});
             },
-            user: function () {
+            createUser: function () {
                 install.result = '';
+                if(!this.userLogin || !this.userPassword){
+                    this.result = "Заполните все обязательные поля!";
+                    return false;
+                }
+                axios({
+                    method: 'post',
+                    url: "/install/index.php",
+                    data: {
+                        action: 'createUser',
+                        login: this.userLogin,
+                        password: this.userPassword
+                    }
+                }).then(function (response) {
+                    if (response.data.status === "success") {
+                        install.step = 3;
+                    } else {
+                        install.result = response.data.text;
+                    }
+                }).catch(function (error) {});
             }
             delete: function () {
                 install.result = '';

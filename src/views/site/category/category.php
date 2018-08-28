@@ -5,19 +5,59 @@
  * Date: 24.06.2018 13:03
  */
 ?>
-<div class="articles">
-    <div class="articles__container">
-        <div class="article-block" v-for="article in articles">
-            <h3 class="article-block__title">{{article.title}}</h3>
-            <div class="article-block__description">{{ (article.content.length > 500) ? article.content.substr(0, 50) +
+<div class="articles__container">
+    <div class="articles">
+
+        <?php if(isset($articles)) :?>
+            <?php foreach ($articles as $items => $article): ?>
+
+            <article class="article-block">
+                <a class="article-block__title" href="<?php
+                if (isset($article->url)) {
+                    echo $article->url;
+                } else {
+                    echo "/article/$article->id";
+                }
+                ?>">
+                    <?= $article->title ?>
+                </a>
+                <div class="article-block__description">
+                    <?= htmlspecialchars($article->content); ?>
+                </div>
+                <div class="article-block__footer">
+                    <div class="article-block__category">
+                        <?php if(isset($article->category)): ?>
+                            Категория: <a href="<?php
+                            if (isset($article->category_link)) {
+                                echo $article->category_link;
+                            } else {
+                                echo '/category/' . $article->category_id;
+                            } ?>">
+                                <?= $article->category ?>
+                            </a>
+                        <?php else: ?>
+                            Без категории
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </article>
+
+        <?php endforeach; ?>
+        <?php endif; ?>
+
+        <article class="article-block" v-for="article in articles">
+            <a class="article-block__title" :href="(article.url === null) ? '/article/' + article.id : article.url">{{article.title}}</a>
+            <div class="article-block__description">{{ (article.content.length > 250) ? article.content.substr(0, 250) +
                 "..." :
                 article.content}}
             </div>
             <div class="article-block__footer">
-                <div class="article-block__category">{{article.category}}</div>
-                <a class="article-block__button" :href="(article.url === null) ? '/article/' + article.id : article.url">Читать далее</a>
+                <div class="article-block__category">
+                    {{ article.category === null ? 'Без категории' : 'Категория:' + article.category }}
+                </div>
             </div>
-        </div>
+        </article>
+
     </div>
     <div class="buttons" v-if="showButton">
         <button class="buttons__load-more" @click="++page; getArticles();">{{buttonTitle}}</button>
@@ -25,11 +65,12 @@
 </div>
 <script>
     let articles = new Vue({
-        el: '.articles',
+        el: '.articles__container',
         data: {
             page: 1,
             articles: [],
             search: '',
+            category: '<?php if(isset($category->id)) echo $category->id; ?>',
             showButton: true,
             buttonTitle: 'Загрузить еще'
         },
@@ -52,6 +93,7 @@
                     url: "/article/getArticles",
                     data: {
                         page: page,
+                        category: this.category
                     }
                 }).then(function (response) {
                     if (response.data.status === "success") {
@@ -84,9 +126,6 @@
                     }).catch(function (error) {
                     });
                 }, 500),
-        },
-        created: function () {
-            this.getArticles();
         }
     })
 </script>

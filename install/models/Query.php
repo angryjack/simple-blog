@@ -5,29 +5,26 @@
  * Date: 18.08.2018 22:11
  */
 namespace Angryjack\models;
-
+use Angryjack\exceptions\BaseException;
 use Exception;
 use \PDO;
 
-class DbInstall
+class Query
 {
     public $host;
     public $user;
     public $password;
     public $dbname;
 
-    public function __construct($host, $user, $password, $dbname)
+    public function __construct($db)
     {
-        $this->host = $host;
-        $this->user = $user;
-        $this->password = $password;
-        $this->dbname = $dbname;
-
-        return $this->connect();
+        $this->host = $db->host;
+        $this->user = $db->user;
+        $this->password = $db->password;
+        $this->dbname = $db->dbname;
     }
 
-
-    protected function connect()
+    public function connect()
     {
         $dsn = "mysql:host=$this->host;dbname=$this->dbname";
         $connection = new PDO($dsn, $this->user, $this->password);
@@ -44,7 +41,7 @@ class DbInstall
      * @return bool
      * @throws Exception
      */
-    public function install()
+    public function createDb()
     {
         $sqlFile = ROOT . '/includes/install.sql';
 
@@ -60,4 +57,33 @@ class DbInstall
 
         return true;
     }
+
+    /**
+     * Создаем пользователя
+     * @param $login
+     * @param $password
+     * @throws Exception
+     */
+    public function createUser($login, $password)
+    {
+        if(!trim($login)){
+            throw new Exception('Логин не может быть пустым.');
+        }
+        if(!trim($password)){
+            throw new Exception('Пароль не может быть пустым.');
+        }
+
+        $password = password_hash($password, PASSWORD_DEFAULT);
+
+        $db = $this->connect();
+        $sql = 'INSERT INTO users (login, passwd, role) VALUES (:login, :password, "admin")';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':login', $login, PDO::PARAM_STR);
+        $stmt->bindParam(':password', $password, PDO::PARAM_STR);
+        if(!$stmt->execute()){
+            throw new Exception('Ошибка создания пользователя.');
+        }
+    }
+
+
 }

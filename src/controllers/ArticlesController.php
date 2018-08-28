@@ -29,8 +29,9 @@ class ArticlesController
             } else {
                 $page = 1;
             }
+            $articleManager = new Articles();
+            $articles = $articleManager->getArticles(false, $page);
 
-            $articles = Articles::getArticles($page);
             $result['status'] = 'success';
             $result['answer']['data'] = $articles;
         }
@@ -52,9 +53,12 @@ class ArticlesController
     {
         try {
             $data = Site::getData();
-            $article = Articles::getArticle($data->id);
+            $articleManager = new Articles($data);
+            $article = $articleManager->getArticle($data->id);
+
             $result['status'] = 'success';
             $result['answer']['data'] = $article;
+
         } catch (BaseException $e) {
             $result['status'] = 'error';
             $result['answer']['text'] = $e->getMessage();
@@ -79,35 +83,13 @@ class ArticlesController
                 throw new BaseException('Доступ запрещен.');
             }
 
-            if ($data->title && $data->content) {
+            $articleManager = new Articles($data);
+            $articleManager->createArticle($data->token);
 
-                if (!isset($data->category) || strlen(trim($data->category)) == 0) {
-                    $data->category = 0;
-                }
-                if (!isset($data->url)) {
-                    $data->url = false;
-                }
-                if (!isset($data->description)) {
-                    $data->description = false;
-                }
-                if (!isset($data->keywords)) {
-                    $data->keywords = false;
-                }
-                if (isset($data->url)) {
-                    $data->url = trim($data->url);
-                }
+            $result['status'] = 'success';
+            $result['answer']['text'] = 'Новость упешно создана.';
+            $result['answer']['code'] = 'ARTICLE_CREATE_SUCCESS';
 
-                if (Articles::createArticle($data->token, $data->title, $data->content, $data->category, $data->url, $data->description, $data->keywords)) {
-                    $result['status'] = 'success';
-                    $result['answer']['text'] = 'Новость упешно создана.';
-                    $result['answer']['code'] = 'ARTICLE_CREATE_SUCCESS';
-                }
-
-            } else {
-                $result['status'] = 'error';
-                $result['answer']['text'] = 'Заполните все обязательные поля.';
-                $result['answer']['code'] = 'ARTICLE_EMPTY_FIELDS';
-            }
         } catch (BaseException $e) {
             $result['status'] = 'error';
             $result['answer']['text'] = $e->getMessage();
@@ -126,45 +108,23 @@ class ArticlesController
     public function actionEditArticle()
     {
         try {
-            $data = Site::getData();
+            $data = Site::getData(false);
 
             if (!Site::checkAccess($data->token)) {
                 throw new BaseException('Доступ запрещен.');
             }
 
-            if ($data->id && $data->title && $data->content) {
-
-                if (!isset($data->category) || strlen(trim($data->category)) == 0) {
-                    $data->category = 0;
-                }
-                if (!isset($data->url)) {
-                    $data->url = false;
-                }
-                if (!isset($data->description)) {
-                    $data->description = false;
-                }
-                if (!isset($data->keywords)) {
-                    $data->keywords = false;
-                }
-                if (isset($data->url)) {
-                    $data->url = trim($data->url);
-                }
-
-                $editArticleResult = Articles::editArticle($data->token, $data->id, $data->title, $data->content,
-                    $data->category, $data->url, $data->description, $data->keywords);
-
-                if ($editArticleResult) {
-                    $result['status'] = 'success';
-                    $result['answer']['text'] = 'Новость упешно отредактирована.';
-                    $result['answer']['code'] = 'ARTICLE_EDIT_SUCCESS';
-
-                } else {
-                    throw new BaseException('Произошла ошибка при редактировании статьи.');
-                }
-
-            } else {
-                throw new BaseException('Заполните все обязательные поля.');
+            if(!isset($data->id)){
+                throw new BaseException('Не указан id статьи.');
             }
+
+            $articleManager = new Articles($data);
+            $articleManager->editArticle($data->token, $data->id);
+
+            $result['status'] = 'success';
+            $result['answer']['text'] = 'Новость упешно отредактирована.';
+            $result['answer']['code'] = 'ARTICLE_EDIT_SUCCESS';
+
         } catch (BaseException $e) {
             $result['status'] = 'error';
             $result['answer']['text'] = $e->getMessage();
@@ -182,22 +142,22 @@ class ArticlesController
     public function actionDeleteArticle()
     {
         try {
-            $data = Site::getData();
+            $data = Site::getData(false);
 
             if (!Site::checkAccess($data->token)) {
                 throw new BaseException('Доступ запрещен.');
             }
 
-            if ($data->id) {
-
-                Articles::deleteArticle($data->token, $data->id);
-                $result['status'] = 'success';
-                $result['answer']['text'] = 'Новость упешно удалена.';
-                $result['answer']['code'] = 'ARTICLE_DELETE_SUCCESS';
-
-            } else {
-                throw new BaseException('Не указан ID статьи.');
+            if(!isset($data->id)){
+                throw new BaseException('Не указан id статьи.');
             }
+
+            $articleManager = new Articles();
+            $articleManager->deleteArticle($data->token, $data->id);
+
+            $result['status'] = 'success';
+            $result['answer']['text'] = 'Новость упешно удалена.';
+            $result['answer']['code'] = 'ARTICLE_DELETE_SUCCESS';
 
         } catch (BaseException $e) {
             $result['status'] = 'error';
@@ -215,20 +175,17 @@ class ArticlesController
      */
     public static function actionSearchArticles()
     {
-
         try {
-            $data = Site::getData();
+            $data = Site::getData(false);
 
-            if ($data->search) {
-                $articles = Articles::searchArticles($data->search);
-
-                $result['status'] = 'success';
-                $result['answer']['data'] = $articles;
-
-            } else {
-                $result['status'] = 'error';
-                $result['answer']['text'] = 'Не заданы условия поиска.';
+            if(!isset($data->search)){
+                throw new BaseException('Не заданы условия поиска.');
             }
+            $articleManager = new Articles();
+            $articles = $articleManager->searchArticles($data->search);
+
+            $result['status'] = 'success';
+            $result['answer']['data'] = $articles;
 
         } catch (BaseException $e) {
             $result['status'] = 'error';

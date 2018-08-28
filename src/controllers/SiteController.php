@@ -11,6 +11,7 @@
 namespace Angryjack\controllers;
 use Angryjack\exceptions\BaseException;
 use Angryjack\models\Articles;
+use Angryjack\models\Categories;
 
 
 class SiteController
@@ -21,22 +22,18 @@ class SiteController
      */
     public function actionIndex()
     {
-        try{
-            $articles = Articles::getArticles();
-            $slider = ROOT . "/src/views/site/layouts/slider.php";
-            $main = ROOT . "/src/views/site/article/articles.php";
-        }
-        catch (BaseException $e){
-            $message = $e->getMessage();
-        }
-        require_once(ROOT . '/src/views/site/index.php');
-        return true;
     }
 
+    /**
+     * Отображение конкретной статьи
+     * @param $id
+     * @return bool
+     */
     public function actionArticle($id)
     {
-        try{
-            $article = Articles::getArticle($id);
+        try {
+            $articleManager = new Articles();
+            $article = $articleManager->getArticle($id);
             $title = $article->title;
             $description = $article->description;
             $keywords = $article->keywords;
@@ -46,25 +43,38 @@ class SiteController
         }
 
         $slider = ROOT . "/src/views/site/layouts/slider.php";
-        $main = ROOT . "/src/views/site/article/single.php";
+        $content = ROOT . "/src/views/site/article/article.php";
         require_once(ROOT . '/src/views/site/index.php');
         return true;
     }
 
-    public function actionCategory($id)
+    /**
+     * Отображение конкретной категории
+     * @param $id
+     * @param int $page
+     * @return bool
+     */
+    public function actionCategory($id = false, $page = 1)
     {
-        var_dump(Articles::getArticlesFromCategory($id, 1));
-        die;
-        $category = null;
-        $page = null;
-        $articles = Articles::getArticlesFromCategory($category, $page);
+        try {
+            //если нет категории, то это главная страница
+            if($id){
+                $categoryManager = new Categories();
+                $category = $categoryManager->getCategory($id);
+                $title = "Категория: $category->title";
+                $description = $category->description;
+                $keywords = $category->keywords;
+            }
+            $articleManager = new Articles();
+            $articles = $articleManager->getArticles($id, $page);
 
-        $title = $articles["answer"]["data"]->title;
-        $description = $articles["answer"]["data"]->description;
-        $keywords = $articles["answer"]["data"]->keywords;
+        }
+        catch (BaseException $e){
+            $message = $e->getMessage();
+        }
 
         $slider = ROOT . "/src/views/site/layouts/slider.php";
-        $main = ROOT . "/src/views/site/category/category.php";
+        $content = ROOT . "/src/views/site/category/category.php";
         require_once(ROOT . '/src/views/site/index.php');
         return true;
     }

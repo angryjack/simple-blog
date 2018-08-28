@@ -16,7 +16,9 @@
     </div>
 
     <div class="container__text">
-        <?= $article->content ?>
+        <?php if(isset($article->content))
+            echo htmlspecialchars( $article->content );
+        ?>
     </div>
 
 </div>
