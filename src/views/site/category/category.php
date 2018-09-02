@@ -5,36 +5,34 @@
  * Date: 24.06.2018 13:03
  */
 ?>
-<div class="articles__container">
+<div class="content__container">
     <div class="articles">
 
         <?php if(isset($articles)) :?>
             <?php foreach ($articles as $items => $article): ?>
 
             <article class="article-block">
-                <a class="article-block__title" href="<?php
-                if (isset($article->url)) {
-                    echo $article->url;
-                } else {
-                    echo "/article/$article->id";
-                }
+                <a class="article-block__title" href="<?=
+                    isset($article->url)
+                    ? htmlspecialchars($article->url)
+                    : htmlspecialchars("/article/$article->id")
                 ?>">
-                    <?= $article->title ?>
+                    <?= htmlspecialchars($article->title) ?>
                 </a>
                 <div class="article-block__description">
-                    <?= htmlspecialchars($article->content); ?>
+                    <?= stristr(htmlspecialchars($article->content), '<br class="preview">', true) ?>
                 </div>
                 <div class="article-block__footer">
                     <div class="article-block__category">
                         <?php if(isset($article->category)): ?>
-                            Категория: <a href="<?php
-                            if (isset($article->category_link)) {
-                                echo $article->category_link;
-                            } else {
-                                echo '/category/' . $article->category_id;
-                            } ?>">
-                                <?= $article->category ?>
-                            </a>
+
+                            Категория: <a href="<?=
+                                isset($article->category_link)
+                                ? htmlspecialchars($article->category_link)
+                                : htmlspecialchars('/category/' . $article->category_id);
+
+                             ?>"><?= htmlspecialchars( $article->category) ?></a>
+
                         <?php else: ?>
                             Без категории
                         <?php endif; ?>
@@ -65,12 +63,12 @@
 </div>
 <script>
     let articles = new Vue({
-        el: '.articles__container',
+        el: '.content__container',
         data: {
             page: 1,
             articles: [],
             search: '',
-            category: '<?php if(isset($category->id)) echo $category->id; ?>',
+            category: '<?= isset($category->id) ? json_encode($category->id) : ""?>',
             showButton: true,
             buttonTitle: 'Загрузить еще'
         },

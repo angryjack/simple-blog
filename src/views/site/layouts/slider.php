@@ -6,8 +6,8 @@
  */
 ?>
 
-<div class="slider__container" v-bind:style="background">
-    {{title}}
+<div class="slider__container" style="background:<?= \Angryjack\models\Site::randBgColor() ?>">
+    <?= isset($title) ? htmlspecialchars($title) : 'cnde.ru' ?>
 </div>
 
 <script>

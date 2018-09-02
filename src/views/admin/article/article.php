@@ -38,6 +38,18 @@
                 <label for="article-title">Заголовок</label>
                 <input type="text" class="form-control" id="article-title" v-model="title">
             </div>
+            <div class="form-group row-m-12">
+                <div class="card">
+                    <div class="card-body">
+                        <span class="badge badge-primary" v-on:click="pasteTags('html')">html</span>
+                        <span class="badge badge-danger" v-on:click="pasteTags('css')">css</span>
+                        <span class="badge badge-warning" v-on:click="pasteTags('js')">js</span>
+                        <span class="badge badge-success" v-on:click="pasteTags('php')">php</span>
+                        <span class="badge badge-dark" v-on:click="pasteTags('code')">code</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label for="article-body">Текст</label>
                 <textarea class="form-control" id="article-body" rows="10" v-model="body"></textarea>
@@ -316,6 +328,9 @@
                 article.url = '';
                 article.meta_description = '';
                 article.meta_keywords = '';
+            },
+            pasteTags: function (tags) {
+                article.body += '\n<pre><code class="' + tags + '"> </code></pre>';
             }
         },
         created: function () {

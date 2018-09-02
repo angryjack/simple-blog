@@ -14,7 +14,8 @@
 
     <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.0/normalize.css">
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+          integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
     <title>title</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -51,6 +52,7 @@
             <div class="form-group">
                 <button class="btn btn-primary" @click="install">Установить</button>
                 <button class="btn btn-success" @click="check">Проверить подключение</button>
+                <button class="btn btn-danger" @click="deleteSqlTables">Очистить БД</button>
             </div>
         </div>
         <div class="card-body" v-else-if="step === 2">
@@ -68,7 +70,7 @@
         <div class="card-body" v-else-if="step === 3">
             <p>Установка прошла упешно.</p>
             <p>Теперь Вы можете удалить папку install</p>
-            <button class="btn btn-danger" @click="this.delete">Удалить</button>
+            <button class="btn btn-danger" @click="deleteInstallDir">Удалить</button>
         </div>
 
         <div class="card-body" v-else>step 3</div>
@@ -95,7 +97,7 @@
         methods: {
             check: function () {
                 install.result = '';
-                if(!this.host || !this.user || !this.password || !this.dbname){
+                if (!this.host || !this.dbUser || !this.dbPassword || !this.dbName) {
                     this.result = "Заполните все обязательные поля!";
                     return false;
                 }
@@ -105,9 +107,9 @@
                     data: {
                         action: 'check',
                         host: this.host,
-                        user: this.user,
-                        password: this.password,
-                        dbname: this.dbname
+                        dbUser: this.dbUser,
+                        dbPassword: this.dbPassword,
+                        dbName: this.dbName
                     }
                 }).then(function (response) {
                     if (response.data.status === "success") {
@@ -115,11 +117,12 @@
                     } else {
                         install.result = response.data.text;
                     }
-                }).catch(function (error) {});
+                }).catch(function (error) {
+                });
             },
             install: function () {
                 install.result = '';
-                if(!this.host || !this.dbUser || !this.dbPassword || !this.dbName){
+                if (!this.host || !this.dbUser || !this.dbPassword || !this.dbName) {
                     this.result = "Заполните все обязательные поля!";
                     return false;
                 }
@@ -129,9 +132,9 @@
                     data: {
                         action: 'install',
                         host: this.host,
-                        user: this.dbUser,
-                        password: this.dbPassword,
-                        dbname: this.dbName
+                        dbUser: this.dbUser,
+                        dbPassword: this.dbPassword,
+                        dbName: this.dbName
                     }
                 }).then(function (response) {
                     if (response.data.status === "success") {
@@ -139,11 +142,12 @@
                     } else {
                         install.result = response.data.text;
                     }
-                }).catch(function (error) {});
+                }).catch(function (error) {
+                });
             },
             createUser: function () {
                 install.result = '';
-                if(!this.userLogin || !this.userPassword){
+                if (!this.userLogin || !this.userPassword) {
                     this.result = "Заполните все обязательные поля!";
                     return false;
                 }
@@ -152,8 +156,12 @@
                     url: "/install/index.php",
                     data: {
                         action: 'createUser',
-                        login: this.userLogin,
-                        password: this.userPassword
+                        host: this.host,
+                        dbUser: this.dbUser,
+                        dbPassword: this.dbPassword,
+                        dbName: this.dbName,
+                        userLogin: this.userLogin,
+                        userPassword: this.userPassword
                     }
                 }).then(function (response) {
                     if (response.data.status === "success") {
@@ -161,24 +169,51 @@
                     } else {
                         install.result = response.data.text;
                     }
-                }).catch(function (error) {});
-            }
-            delete: function () {
+                }).catch(function (error) {
+                });
+            },
+            deleteInstallDir: function () {
                 install.result = '';
                 axios({
                     method: 'post',
                     url: "/install/index.php",
                     data: {
-                        action: 'delete'
+                        action: 'deleteInstallDir'
                     }
                 }).then(function (response) {
-                    console.log(response);
+
                     if (response.data.status === "success") {
                         document.location = "/";
                     } else {
                         install.result = response.data.text;
                     }
-                }).catch(function (error) {});
+
+                }).catch(function (error) {
+                });
+            },
+            deleteSqlTables: function () {
+                if (!this.host || !this.dbUser || !this.dbPassword || !this.dbName) {
+                    this.result = "Заполните все обязательные поля!";
+                    return false;
+                }
+                if (!confirm("Очистка Базы Данных привет к полному удалению всех данных из нее. Вы уверены?")) {
+                    return;
+                }
+                install.result = '';
+                axios({
+                    method: 'post',
+                    url: "/install/index.php",
+                    data: {
+                        action: 'deleteSqlTables',
+                        host: this.host,
+                        dbUser: this.dbUser,
+                        dbPassword: this.dbPassword,
+                        dbName: this.dbName
+                    }
+                }).then(function (response) {
+                    install.result = response.data.text;
+                }).catch(function (error) {
+                });
             }
         }
     })

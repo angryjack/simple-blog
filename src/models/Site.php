@@ -135,4 +135,42 @@ class Site
 
         return false;
     }
+
+    /**
+     * Заменяем из html сущностей теги code, pre, a, img для нормального отображения на странице
+     * все останольно должно попадать под правила htmlspecialchars
+     * @param $content
+     * @return null|string|string[]
+     */
+    public static function replaceTags($content){
+        $patterns[0] = '/&lt;pre&gt;&lt;code class=&quot;\w{1,5}&quot;&gt;/';
+        $patterns[1] = '/&lt;\/code&gt;&lt;\/pre&gt;/';
+        $patterns[2] = '/&lt;a\s.*?href=&quot;(.+?)&quot;.*?&gt;(.+?)&lt;\/a&gt;*/';
+
+        $replacements[0] = '<pre><code class="$1">';
+        $replacements[1] = '</code></pre>';
+        $replacements[2] = '<a href="$1">$2</a>';
+
+        return preg_replace( $patterns, $replacements, $content);
+    }
+
+    /**
+     * Возвращаем случайный цвет
+     * @return mixed
+     */
+    public static function randBgColor(){
+        $colors = [
+            '#8a2b2baa',
+            '#8a2b6daa',
+            '#4b2b8ac2',
+            '#2b488aaa',
+            '#2b678aaa',
+            '#2b8a86aa',
+            '#2b8a5eaa',
+            '#3e8a2baa',
+            '#898a2baa'
+        ];
+
+        return $colors[array_rand($colors)];
+    }
 }

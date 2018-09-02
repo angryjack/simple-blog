@@ -12,13 +12,12 @@ class File
 {
     /**
      * Проверяем существует ли конфиг БД
-     * @throws Exception
      */
     public function checkDbConfigExist()
     {
         $dbParamsPath = $_SERVER['DOCUMENT_ROOT'] . '/src/includes/db_params.php';
         if (file_exists($dbParamsPath)) {
-            throw new Exception('Сайт уже установлен. Удалите папку install.');
+            die('Сайт уже установлен. Удалите папку install.');
         }
     }
 
@@ -39,9 +38,9 @@ class File
 
         $db_params = '<?php return array(';
         $db_params .= " 'host' => '" . $db->host ."', ";
-        $db_params .= " 'dbname' => '" . $db->dbname . "', ";
-        $db_params .= " 'user' => '" . $db->user . "', ";
-        $db_params .= " 'password' => '" . $db->password . "' );";
+        $db_params .= " 'dbname' => '" . $db->dbName . "', ";
+        $db_params .= " 'user' => '" . $db->dbUser . "', ";
+        $db_params .= " 'password' => '" . $db->dbPassword . "' );";
 
         file_put_contents($installPath . 'db_params.php', $db_params);
     }
@@ -53,8 +52,10 @@ class File
     public function deleteDbConfigFile()
     {
         $dbParamsPath = $_SERVER['DOCUMENT_ROOT'] . '/src/includes/db_params.php';
-        if(!unlink($dbParamsPath)){
-            throw new Exception('Произошла ошибка при удалении конфигурации.');
+        if (file_exists($dbParamsPath)) {
+            if(!unlink($dbParamsPath)){
+                throw new Exception('Произошла ошибка при удалении конфигурации.');
+            }
         }
     }
 

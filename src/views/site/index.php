@@ -17,7 +17,7 @@
 
     <?php (!isset($aside)) ?: include($aside); ?>
 
-    <?php (!isset($message)) ?: include($message); ?>
+    <?= (!isset($message)) ?: ($message); ?>
 
 </main>
 

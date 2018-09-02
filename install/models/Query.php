@@ -5,7 +5,6 @@
  * Date: 18.08.2018 22:11
  */
 namespace Angryjack\models;
-use Angryjack\exceptions\BaseException;
 use Exception;
 use \PDO;
 
@@ -19,9 +18,9 @@ class Query
     public function __construct($db)
     {
         $this->host = $db->host;
-        $this->user = $db->user;
-        $this->password = $db->password;
-        $this->dbname = $db->dbname;
+        $this->user = $db->dbUser;
+        $this->password = $db->dbPassword;
+        $this->dbname = $db->dbName;
     }
 
     public function connect()
@@ -53,6 +52,27 @@ class Query
 
         if(!$result){
             throw new Exception('Ошибка при создании базы данных.');
+        }
+
+        return true;
+    }
+
+    /**
+     * Удаляем таблицы из базы данных
+     * @return bool
+     * @throws Exception
+     */
+    public function deleteTables(){
+        $sqlFile = ROOT . '/includes/delete.sql';
+
+        if(!file_exists($sqlFile)){
+            throw new Exception('SQL файл не найден!');
+        }
+        $db = $this->connect();
+        $result = $db->query(file_get_contents($sqlFile));
+
+        if(!$result){
+            throw new Exception('Произошла ошибка при удалении таблиц.');
         }
 
         return true;

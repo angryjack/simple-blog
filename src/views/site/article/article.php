@@ -5,7 +5,7 @@
  * Date: 01.08.2018 22:50
  */
 ?>
-<div class="container__article">
+<div class="content__container">
 
     <div class="container__links">
         <?php if(isset($article->category)): ?>
@@ -16,9 +16,7 @@
     </div>
 
     <div class="container__text">
-        <?php if(isset($article->content))
-            echo htmlspecialchars( $article->content );
-        ?>
+        <?= isset($article->content) ? \Angryjack\models\Site::replaceTags(htmlspecialchars($article->content)) : '' ?>
     </div>
 
 </div>

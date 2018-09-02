@@ -72,8 +72,8 @@ class FrontController
      */
     public function createUser()
     {
-        $login = $this->data->login;
-        $password = $this->data->password;
+        $login = $this->data->userLogin;
+        $password = $this->data->userPassword;
 
         $installer = new Query($this->data);
         $installer->createUser($login, $password);
@@ -85,8 +85,8 @@ class FrontController
      */
     public function undoInstall(){
 
-        $installer = new File();
-        $installer->deleteDbConfigFile();
+        $unInstaller = new File();
+        $unInstaller->deleteDbConfigFile();
     }
 
     /**
@@ -97,5 +97,15 @@ class FrontController
 
         $installer = new File();
         $installer->deleteInstallDir($this->installDir);
+    }
+
+    /**
+     * Удаляем таблицы из базы данных
+     * @throws \Exception
+     */
+    public function deleteDbTables(){
+        $unInstaller = new Query($this->data);
+        $unInstaller->deleteTables();
+
     }
 }
