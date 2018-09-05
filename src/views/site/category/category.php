@@ -12,10 +12,10 @@
             <?php foreach ($articles as $items => $article): ?>
 
             <article class="article-block">
-                <a class="article-block__title" href="<?=
+                <a class="article-block__title" href="/<?=
                     isset($article->url)
                     ? htmlspecialchars($article->url)
-                    : htmlspecialchars("/article/$article->id")
+                    : htmlspecialchars("article/$article->id")
                 ?>">
                     <?= htmlspecialchars($article->title) ?>
                 </a>
@@ -26,10 +26,10 @@
                     <div class="article-block__category">
                         <?php if(isset($article->category)): ?>
 
-                            Категория: <a href="<?=
+                            Категория: <a href="/<?=
                                 isset($article->category_link)
                                 ? htmlspecialchars($article->category_link)
-                                : htmlspecialchars('/category/' . $article->category_id);
+                                : htmlspecialchars("category/$article->category_id");
 
                              ?>"><?= htmlspecialchars( $article->category) ?></a>
 
@@ -44,7 +44,7 @@
         <?php endif; ?>
 
         <article class="article-block" v-for="article in articles">
-            <a class="article-block__title" :href="(article.url === null) ? '/article/' + article.id : article.url">{{article.title}}</a>
+            <a class="article-block__title" :href="(article.url === null) ? '/article/' + article.id : '/' + article.url">{{article.title}}</a>
             <div class="article-block__description">{{ (article.content.length > 250) ? article.content.substr(0, 250) +
                 "..." :
                 article.content}}
@@ -67,20 +67,9 @@
         data: {
             page: 1,
             articles: [],
-            search: '',
             category: '<?= isset($category->id) ? json_encode($category->id) : ""?>',
             showButton: true,
             buttonTitle: 'Загрузить еще'
-        },
-        watch: {
-            search: function () {
-                if (this.search.length > 2) {
-                    this.searchArticles();
-                } else if (this.search.length < 1) {
-                    this.articles.length = 0;
-                    this.getArticles();
-                }
-            }
         },
         methods: {
             getArticles: function (page) {
@@ -106,24 +95,7 @@
             },
             loadMoreArticles: function () {
                 this.getArticles(this.page);
-            },
-            searchArticles: _.debounce(
-                function () {
-                    axios({
-                        method: 'post',
-                        url: "/article/searchArticles",
-                        data: {
-                            search: this.search
-                        }
-                    }).then(function (response) {
-                        if (response.data.status === "success") {
-                            this.articles = response.data.answer.data;
-                        } else {
-                            //response.data.answer.text
-                        }
-                    }).catch(function (error) {
-                    });
-                }, 500),
+            }
         }
     })
 </script>

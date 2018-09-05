@@ -7,7 +7,9 @@
 ?>
 
 <div class="slider__container" style="background:<?= \Angryjack\models\Site::randBgColor() ?>">
-    <?= isset($title) ? htmlspecialchars($title) : 'cnde.ru' ?>
+    <div class="slider-text">
+        <?= isset($title) ? htmlspecialchars($title) : 'cnde.ru' ?>
+    </div>
 </div>
 
 <script>

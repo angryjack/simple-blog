@@ -22,7 +22,6 @@
     <script src="//cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="//unpkg.com/axios/dist/axios.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
-    <script src="/web/js/admin.js"></script>
     <script src="/web/js/highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
 </head>

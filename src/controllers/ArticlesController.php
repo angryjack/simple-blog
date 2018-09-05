@@ -182,7 +182,7 @@ class ArticlesController
                 throw new BaseException('Не заданы условия поиска.');
             }
             $articleManager = new Articles();
-            $articles = $articleManager->searchArticles($data->search);
+            $articles = $articleManager->search($data->search);
 
             $result['status'] = 'success';
             $result['answer']['data'] = $articles;

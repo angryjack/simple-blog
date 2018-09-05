@@ -6,10 +6,10 @@
  */
 
 ?>
-<aside class="col-sm px-4" id="articles-aside" v-bind:class="{loading: isLoading}">
+<aside class="col-12 col-md-4 bg-light pt-2" id="articles-aside" v-bind:class="{loading: isLoading}">
     <div class="form-group">
         <input type="text" class="form-control" placeholder="Поиск по статьям"
-        v-model="search">
+               v-model="search">
     </div>
     <button type="button" class="btn btn-success btn-block mb-3" id="prepare-for-add-article"
             v-if="editMode"
@@ -17,7 +17,7 @@
     </button>
     <div id="articles-list">
         <div class="aside-article-block" v-for="article in articles">
-            <a class="article-title" @click="getArticle(article.id)">{{article.title}}</a>
+            <strong><a class="article-title" @click="getArticle(article.id)">{{article.title}}</a></strong>
             <p class="article-content">{{ (article.content.length > 50) ? article.content.substr(0, 50) + "..." :
                 article.content}}</p>
         </div>
@@ -28,7 +28,7 @@
     </button>
 </aside>
 
-<main class="col-7">
+<main class="col-12 col-md-8">
     <div id="article" class="card" v-bind:class="{loading: isLoading}">
         <div class="card-header">
             {{create ? "Создать новую статью" : "Редактирование"}}
@@ -39,15 +39,10 @@
                 <input type="text" class="form-control" id="article-title" v-model="title">
             </div>
             <div class="form-group row-m-12">
-                <div class="card">
-                    <div class="card-body">
-                        <span class="badge badge-primary" v-on:click="pasteTags('html')">html</span>
-                        <span class="badge badge-danger" v-on:click="pasteTags('css')">css</span>
-                        <span class="badge badge-warning" v-on:click="pasteTags('js')">js</span>
-                        <span class="badge badge-success" v-on:click="pasteTags('php')">php</span>
-                        <span class="badge badge-dark" v-on:click="pasteTags('code')">code</span>
-                    </div>
-                </div>
+                <span class="badge badge-primary" v-on:click="pasteTags('html')">html</span>
+                <span class="badge badge-danger" v-on:click="pasteTags('css')">css</span>
+                <span class="badge badge-warning" v-on:click="pasteTags('js')">js</span>
+                <span class="badge badge-success" v-on:click="pasteTags('php')">php</span>
             </div>
 
             <div class="form-group">
@@ -124,7 +119,7 @@
             search: function () {
                 if (aside.search.length > 2) {
                     this.searchArticles();
-                } else if(aside.search.length < 1){
+                } else if (aside.search.length < 1) {
                     this.articles.length = 0;
                     this.getArticles();
                 }
@@ -242,7 +237,8 @@
                         aside.showButton = false;
                         //response.data.answer.text
                     }
-                }).catch(function (error) {});
+                }).catch(function (error) {
+                });
             },
             addArticle: function () {
                 article.isLoading = true;

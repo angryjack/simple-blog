@@ -6,7 +6,7 @@
  */
 ?>
 
-<aside class="col-sm px-4" id="categories-aside" v-bind:class="{loading: isLoading}">
+<aside class="col-12 col-md-4 bg-light pt-2" id="categories-aside" v-bind:class="{loading: isLoading}">
     <div class="form-group">
         <input type="text" class="form-control" placeholder="Поиск по категориям"
                v-model="search">
@@ -17,7 +17,7 @@
     </button>
     <div id="categories-list">
         <div class="aside-category-block" v-for="category in categories">
-            <a class="category-title" @click="getCategory(category.id)">{{category.title}}</a>
+            <strong><a class="category-title" @click="getCategory(category.id)">{{category.title}}</a></strong>
         </div>
     </div>
     <button type="button" class="btn btn-secondary btn-block my-4" id="load-more-categories"
@@ -26,8 +26,7 @@
     </button>
 </aside>
 
-<main class="col-7">
-
+<main class="col-12 col-md-8">
     <div class="card" id="category" v-bind:class="{loading: isLoading}">
         <div class="card-header">
             {{create ? "Создать новую категорию" : "Редактирование"}}

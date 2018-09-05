@@ -98,5 +98,4 @@ class AdminController
 
         return true;
     }
-
 }

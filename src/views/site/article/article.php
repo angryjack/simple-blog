@@ -9,7 +9,14 @@
 
     <div class="container__links">
         <?php if(isset($article->category)): ?>
-            Категория: <?= substr($article->category, 0, 50); ?>
+
+            Категория: <a href="<?=
+            isset($article->category_link)
+                ? htmlspecialchars($article->category_link)
+                : htmlspecialchars('/category/' . $article->category_id);
+
+            ?>"><?= htmlspecialchars( $article->category) ?></a>
+
         <?php else: ?>
             Без категории
         <?php endif; ?>

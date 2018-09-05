@@ -360,7 +360,7 @@ class Articles
      * @return array
      * @throws BaseException
      */
-    public function searchArticles($search){
+    public function search($search){
 
         if (strlen($search) < 2 ) {
             throw new BaseException('Строка поиска слишком короткая.');
