@@ -7,20 +7,20 @@
 ?>
 <?php include(ROOT . "/src/views/admin/layouts/header.php"); ?>
 
-<div class="container align-self-center d-flex justify-content-center">
+<div class="container align-self-center d-flex justify-content-center mt-4">
     <div class="card" style="width: 25rem" id="admin-login">
-        <h5 class="card-header">Войти:</h5>
+        <h5 class="card-header">Admin panel</h5>
         <div class="card-body">
             <div class="form-group">
-                <label for="admin-login">Введите логин</label>
-                <input type="text" class="form-control" placeholder="Enter login" v-model="login">
+                <label for="admin-login">Login:</label>
+                <input type="text" class="form-control" placeholder="place for login" v-model="login">
             </div>
             <div class="form-group">
-                <label for="admin-passwd">Введите пароль</label>
-                <input type="password" class="form-control" placeholder="Password" v-model="password">
+                <label for="admin-passwd">Password:</label>
+                <input type="password" class="form-control" placeholder="place for paasword" v-model="password">
             </div>
             <div class="form-group">
-                <button class="btn btn-primary" @click="doLogin">Войти</button>
+                <button class="btn btn-primary" @click="doLogin">Say Friend and enter</button>
             </div>
             <p class="card-text">{{result}}</p>
         </div>
@@ -51,7 +51,7 @@
                 }).then(function (response) {
                     if (response.data.status === "success") {
                         document.cookie = "token=" + response.data.answer.data + "; path=/admin; expires=20160";
-                        document.location = "http://test.com/admin/";
+                        document.location = "/admin/";
                     } else {
                         login.result = response.data.answer.text;
                     }

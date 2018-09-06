@@ -17,8 +17,6 @@
 
     <?php (!isset($aside)) ?: include($aside); ?>
 
-    <?= (!isset($message)) ?: ($message); ?>
-
 </main>
 
 <?php include(ROOT . "/src/views/site/layouts/footer.php"); ?>

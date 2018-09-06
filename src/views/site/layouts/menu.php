@@ -8,9 +8,12 @@
 
 <header class="header">
     <div class="header__container">
+        <div class="header__logo"><a href="/" class="header__logo">cnde</a></div>
         <ul class="header__menu">
-            <li><a href="/" class="header__logo">cnde</a></li>
-            <li><svg class="feather feather-search sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="-6 -9 38 38" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></li>
+            <li><a href="/css">CSS</a></li>
+            <li><a href="/js">JS</a></li>
+            <li><a href="/php">PHP</a></li>
+            <li><a href="/other">Other</a></li>
         </ul>
     </div>
 </header>

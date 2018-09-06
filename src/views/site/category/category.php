@@ -57,9 +57,15 @@
         </article>
 
     </div>
-    <div class="buttons" v-if="showButton">
-        <button class="buttons__load-more" @click="++page; getArticles();">{{buttonTitle}}</button>
-    </div>
+    <?php if (isset($message)) : ?>
+        <div class="message">
+            <?= htmlspecialchars($message) ?>
+        </div>
+    <?php else : ?>
+        <div class="buttons" v-if="showButton">
+            <button class="buttons__load-more" @click="++page; getArticles();">{{buttonTitle}}</button>
+        </div>
+    <?php endif; ?>
 </div>
 <script>
     let articles = new Vue({
