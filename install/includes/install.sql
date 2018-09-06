@@ -8,16 +8,18 @@ CREATE TABLE `articles` (
   `description` varchar(1024) DEFAULT NULL,
   `keywords` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=116 DEFAULT CHARSET=utf8;
 
 -- Create syntax for TABLE 'categories'
 CREATE TABLE `categories` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(512) DEFAULT NULL,
+  `content` text,
   `description` text,
+  `keywords` text,
   `link_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
 
 -- Create syntax for TABLE 'routes'
 CREATE TABLE `routes` (
@@ -26,7 +28,7 @@ CREATE TABLE `routes` (
   `internal_route` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `url` (`url`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 
 -- Create syntax for TABLE 'users'
 CREATE TABLE `users` (
@@ -39,4 +41,4 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `login` (`login`),
   UNIQUE KEY `email` (`email`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;

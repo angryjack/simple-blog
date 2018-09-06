@@ -25,7 +25,7 @@ return array(
     'admin/category/search' => 'categories/search',
     'admin/category' => 'admin/category',
 
-    'admin' => 'admin/index',
+    'admin' => 'admin/article',
 
     'article/getArticles' => 'articles/getArticles',
     'article/search' => 'articles/search',

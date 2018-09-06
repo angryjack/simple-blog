@@ -145,7 +145,7 @@ class Articles
         }
 
         $db = Db::getConnection();
-        $sql = 'INSERT INTO articles (title, content, category, description, keywords) VALUES (:title, :content, :category, :description, :keywords)';
+        $sql = 'INSERT INTO articles (title, content, category, description, keywords, create_date) VALUES (:title, :content, :category, :description, :keywords, UNIX_TIMESTAMP())';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':title', $this->article->title, PDO::PARAM_STR);
         $stmt->bindParam(':content', $this->article->content, PDO::PARAM_STR);
