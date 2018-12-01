@@ -38,8 +38,8 @@ class InstallRouter
             $result['status'] = 'success';
             $result['text'] = 'Подключение успешно установлено!';
 
-            // Устанавливает сайт
         } else if (isset($data->action) && $data->action == 'install') {
+            // Устанавливает сайт
             try {
                 $run = new FrontController();
                 $run->installSite();
@@ -53,31 +53,29 @@ class InstallRouter
                 throw new Exception($e->getMessage());
             }
 
-            // Удаляем папку установки
         } else if (isset($data->action) && $data->action == 'deleteInstallDir') {
-
+            // Удаляем папку установки
             $run = new FrontController();
             $run->deleteInstaller();
             $result['status'] = 'success';
 
-            // Удаляем таблицы из Базы данных
         } else if (isset($data->action) && $data->action == 'deleteSqlTables') {
-
+            // Удаляем таблицы из Базы данных
             $run = new FrontController();
             $run->deleteDbTables();
             $result['status'] = 'success';
             $result['text'] = 'База данных успешно очищена!';
 
-            // Создаем пользователя
-        } else if (isset($data->action) && $data->action == 'createUser') {
 
+        } else if (isset($data->action) && $data->action == 'createUser') {
+            // Создаем пользователя
             $run = new FrontController();
             $run->createUser();
             $result['status'] = 'success';
             $result['text'] = 'Пользователь успешно создан!';
-            // Отображаем страницу установки
-        } else {
 
+        } else {
+            // Отображаем страницу установки
             $run = new FrontController();
             $run->index();
             return;
