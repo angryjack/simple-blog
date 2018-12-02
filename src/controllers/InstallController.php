@@ -14,7 +14,9 @@ class InstallController
     /**
      * InstallController constructor.
      */
-    public function __construct() {}
+    public function __construct() {
+        //todo сделать проверку на установщик
+    }
 
     /**
      * Форма установки сайта
@@ -135,8 +137,8 @@ class InstallController
      */
     public function actionClearDb(){
         try {
-            $unInstaller = new Install();
-            $unInstaller->clearDb();
+            $installer = new Install();
+            $installer->clearDb();
             $result['status'] = 'success';
             $result['message'] = 'База данных успешно очищена!';
         }

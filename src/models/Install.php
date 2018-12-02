@@ -10,7 +10,7 @@ use Angryjack\exceptions\InstallException;
 
 class Install
 {
-    private $_installPath = __DIR__ . "/../includes/";
+    private $_installPath = '../includes/';
 
     private $_data;
 
@@ -38,9 +38,6 @@ class Install
 
         $db = $this->_data->db;
 
-        var_dump($db);
-        die;
-
         $db_params = '<?php return array(';
         $db_params .= " 'host' => '" . $db->host . "', ";
         $db_params .= " 'name' => '" . $db->dbName . "', ";
@@ -57,7 +54,7 @@ class Install
      */
     public function importDataToDb()
     {
-        $sqlFile = '../includes/install.sql';
+        $sqlFile = $this->_installPath . 'install.sql';
 
         if (!file_exists($sqlFile)) {
             throw new InstallException('Установочный SQL файл не найден!');
@@ -131,7 +128,7 @@ class Install
      */
     public function deleteDbConfigFile()
     {
-        $configPath = $this->_installPath . '/db_params.php';
+        $configPath = $this->_installPath . 'db_params.php';
         if (! file_exists($configPath)){
             throw new InstallException('Файл не существует или уже был удален.');
         }
@@ -148,5 +145,7 @@ class Install
      * @return bool
      * @throws \Exception
      */
-    public function deleteInstallator() {}
+    public function deleteInstallator() {
+
+    }
 }
