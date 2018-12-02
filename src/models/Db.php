@@ -9,15 +9,18 @@ namespace Angryjack\models;
 use PDO;
 
 /**
- * Класс подключения к базе данных
+ * Класс для работы с базой данных
  * Class Db
  * @package Angryjack\models
  */
 class Db
 {
     protected static $_instance;
+    private static $_params;
 
     private function __construct(){}
+    private function __clone(){}
+    private function __wakeup(){}
 
     /**
      * Возвращаем экземпляр PDO
@@ -27,6 +30,7 @@ class Db
     public static function getConnection()
     {
         if (self::$_instance === null) {
+            self::getParams();
             self::$_instance = self::connect();
         }
 
@@ -38,12 +42,10 @@ class Db
      * @return PDO
      * @throws \Exception
      */
-    private static function connect(){
-
-        $params = self::getParams();
-
-        $dsn = "mysql:host={$params['host']};dbname={$params['dbname']}";
-        $connection = new PDO($dsn, $params['user'], $params['password']);
+    private static function connect()
+    {
+        $dsn = "mysql:host=" . self::$_params['host'] . ";dbname=" . self::$_params['name'];
+        $connection = new PDO($dsn, self::$_params['user'], self::$_params['password']);
         $connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $connection->exec("set names utf8");
@@ -57,17 +59,20 @@ class Db
      * @throws \Exception
      */
     protected static function getParams(){
-        $paramsPath = ROOT . '/src/includes/db_params.php';
+        $paramsPath = '../includes/db_params.php';
 
-        if(!file_exists($paramsPath)){
-            throw new \Exception('Не удалось загрузить конфиг Базы Данных.');
+        if (! file_exists($paramsPath)){
+            $db = Site::getData()->db;
+
+            self::$_params = array(
+                'host' => $db->host,
+                'user' => $db->user,
+                'password' => $db->password,
+                'name' => $db->name,
+            );
+        } else {
+            self::$_params = include($paramsPath);
         }
-        $params = include($paramsPath);
 
-        return $params;
     }
-
-    private function __clone(){}
-
-    private function __wakeup(){}
 }

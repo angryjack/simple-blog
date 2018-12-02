@@ -1,4 +1,5 @@
 <?php
+
 use Angryjack\models\Router;
 
 require_once '../src/bootstrap.php';

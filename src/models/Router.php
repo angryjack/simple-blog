@@ -20,8 +20,19 @@ class Router
         // Путь к файлу с роутами
         $routesPath = ROOT . '/src/includes/routes.php';
 
-        // Получаем роуты
-        $this->routes = array_merge($this->getRoutesFromDB(), include($routesPath));
+        $uri = $this->getURI();
+
+        $flag = preg_match('/^install/', $uri);
+
+        if (! $flag && ! file_exists('../src/includes/db_params.php')){
+            header('Location: /install');
+            exit ('Cайт не установлен. Вы будете перенаправлены на страницу установки через 3 секунды.');
+        }
+        if ($flag) {
+            $this->routes = include($routesPath);
+        } else {
+            $this->routes = array_merge($this->getRoutesFromDB(), include($routesPath));
+        }
     }
 
     /**
@@ -29,7 +40,7 @@ class Router
      */
     private function getURI()
     {
-        if (!empty($_SERVER['REQUEST_URI'])) {
+        if (! empty($_SERVER['REQUEST_URI'])) {
             return trim($_SERVER['REQUEST_URI'], '/');
         }
     }

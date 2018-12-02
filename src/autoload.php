@@ -4,7 +4,6 @@
  * Date: 2018-12-01 20:56
  */
 
-
 spl_autoload_register(function ($class) {
 
     // project-specific namespace prefix

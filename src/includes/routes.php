@@ -6,6 +6,14 @@
  */
 
 return array(
+
+    'install/checkDb' => 'install/checkDb',
+    "install/clearDb" => "install/clearDb",
+    'install/init' => 'install/init',
+    "install/delete" => "install/delete",
+    "install/createUser" => "install/createUser",
+    'install' => 'install/index',
+
     'admin/login' => 'admin/login',
     'admin/doLogin' => 'admin/doLogin',
 
