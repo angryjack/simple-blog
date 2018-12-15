@@ -6,12 +6,12 @@
  */
 
 namespace Angryjack\controllers;
+
 use Angryjack\exceptions\BaseException;
 use Angryjack\models\Site;
 
 class AdminController
 {
-
     /**
      * Форма входа в админ панель
      * @return bool

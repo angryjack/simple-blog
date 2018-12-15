@@ -6,6 +6,7 @@
  */
 
 namespace Angryjack\controllers;
+
 use Angryjack\exceptions\BaseException;
 use Angryjack\models\Articles;
 use Angryjack\models\Site;
@@ -34,8 +35,7 @@ class ArticlesController
 
             $result['status'] = 'success';
             $result['answer']['data'] = $articles;
-        }
-        catch (BaseException $e) {
+        } catch (BaseException $e) {
             $result['status'] = 'error';
             $result['answer']['text'] = $e->getMessage();
         }
@@ -97,7 +97,6 @@ class ArticlesController
 
         echo json_encode($result);
         return true;
-
     }
 
     /**
@@ -114,7 +113,7 @@ class ArticlesController
                 throw new BaseException('Доступ запрещен.');
             }
 
-            if(!isset($data->id)){
+            if (!isset($data->id)) {
                 throw new BaseException('Не указан id статьи.');
             }
 
@@ -148,7 +147,7 @@ class ArticlesController
                 throw new BaseException('Доступ запрещен.');
             }
 
-            if(!isset($data->id)){
+            if (!isset($data->id)) {
                 throw new BaseException('Не указан id статьи.');
             }
 
@@ -178,7 +177,7 @@ class ArticlesController
         try {
             $data = Site::getData(false);
 
-            if(!isset($data->search)){
+            if (!isset($data->search)) {
                 throw new BaseException('Не заданы условия поиска.');
             }
             $articleManager = new Articles();

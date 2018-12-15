@@ -6,6 +6,7 @@
  */
 
 namespace Angryjack\models;
+
 use PDO;
 
 /**
@@ -15,12 +16,23 @@ use PDO;
  */
 class Db
 {
-    protected static $_instance;
-    private static $_params;
+    protected static $instance;
+    private static $params;
 
-    private function __construct(){}
-    private function __clone(){}
-    private function __wakeup(){}
+    private function __construct()
+    {
+        //
+    }
+
+    private function __clone()
+    {
+        //
+    }
+
+    private function __wakeup()
+    {
+        //
+    }
 
     /**
      * Возвращаем экземпляр PDO
@@ -29,12 +41,12 @@ class Db
      */
     public static function getConnection()
     {
-        if (self::$_instance === null) {
+        if (self::$instance === null) {
             self::getParams();
-            self::$_instance = self::connect();
+            self::$instance = self::connect();
         }
 
-        return self::$_instance;
+        return self::$instance;
     }
 
     /**
@@ -44,8 +56,8 @@ class Db
      */
     private static function connect()
     {
-        $dsn = "mysql:host=" . self::$_params['host'] . ";dbname=" . self::$_params['name'];
-        $connection = new PDO($dsn, self::$_params['user'], self::$_params['password']);
+        $dsn = "mysql:host=" . self::$params['host'] . ";dbname=" . self::$params['name'];
+        $connection = new PDO($dsn, self::$params['user'], self::$params['password']);
         $connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $connection->exec("set names utf8");
@@ -55,24 +67,23 @@ class Db
 
     /**
      * Получаем данные для поключения к базе данных
-     * @return mixed
      * @throws \Exception
      */
-    protected static function getParams(){
+    protected static function getParams()
+    {
         $paramsPath = '../includes/db_params.php';
 
-        if (! file_exists($paramsPath)){
+        if (! file_exists($paramsPath)) {
             $db = Site::getData()->db;
 
-            self::$_params = array(
+            self::$params = array(
                 'host' => $db->host,
                 'user' => $db->user,
                 'password' => $db->password,
                 'name' => $db->name,
             );
         } else {
-            self::$_params = include($paramsPath);
+            self::$params = include($paramsPath);
         }
-
     }
 }

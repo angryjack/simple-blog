@@ -29,7 +29,7 @@ class Categories
     {
         $page = intval($page);
 
-        if (!$page) {
+        if (! $page) {
             throw new BaseException('Не указана страница.');
         }
 
@@ -52,7 +52,7 @@ class Categories
         $stmt->execute();
         $categories = $stmt->fetchAll();
 
-        if (!$categories) {
+        if (! $categories) {
             throw new BaseException('Категории не найдены.');
 
         }
@@ -68,7 +68,7 @@ class Categories
      */
     public function getCategory($id)
     {
-        if (!$id) {
+        if (! $id) {
             throw new BaseException('Не указан id категории.');
         }
 
@@ -88,7 +88,7 @@ class Categories
         $stmt->execute();
         $category = $stmt->fetch();
 
-        if (!$category) {
+        if (! $category) {
             throw new BaseException("Категория с ID = $id не найдена.");
         }
 
@@ -109,7 +109,7 @@ class Categories
     public function createCategory($token)
     {
 
-        if (!Site::checkAccess($token)) {
+        if (! Site::checkAccess($token)) {
             throw new BaseException('Доступ запрещен.');
         }
 
@@ -160,9 +160,7 @@ class Categories
             }
             return true;
         }
-
         throw new BaseException('Произошла ошибка при создании категории.');
-
     }
 
     /**
@@ -179,16 +177,16 @@ class Categories
      */
     public function editCategory($token, $id)
     {
-        if (!Site::checkAccess($token)) {
+        if (! Site::checkAccess($token)) {
             throw new BaseException('Доступ запрещен.');
         }
 
-        if (!$id) {
+        if (! $id) {
             throw new BaseException('Не указан ID статьи.');
         }
 
         // проверяем существование категории перед ее редактированием
-        if (!$this->checkCategoryExist($id)) {
+        if (! $this->checkCategoryExist($id)) {
             throw new BaseException("Категории с ID = $id не существует.");
         }
 
@@ -222,7 +220,6 @@ class Categories
         $stmt->bindParam(':keywords', $this->category->keywords, PDO::PARAM_STR);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         if ($stmt->execute()) {
-
             //проверяем закреплена ли ЧПУ за категорией
             $db = Db::getConnection();
             $sql = 'SELECT link_id FROM categories WHERE id = :id';
@@ -234,7 +231,6 @@ class Categories
 
             //если ссылка закреплена и новая ссылка передана выполняем UPDATE
             if ($linkCheckExist->link_id != null && $this->category->url) {
-
                 $db = Db::getConnection();
                 $sql = 'UPDATE routes SET url = :url WHERE id = :id';
                 $stmt = $db->prepare($sql);
@@ -242,10 +238,9 @@ class Categories
                 $stmt->bindParam(':id', $linkCheckExist->link_id, PDO::PARAM_INT);
                 $stmt->execute();
 
-                // если ссылка не существует, но новая ссылка была передана, выполняем INSERT в таблицу ссылок и связываем
+                // если ссылка не существует, но новая ссылка была передана, выполняем INSERT и связываем
                 // с таблицей категорий
             } else if ($linkCheckExist->link_id == null && $this->category->url) {
-
                 $db = Db::getConnection();
                 $internal_route = "site/category/$id";
                 $sql = 'INSERT INTO routes (url, internal_route) VALUES (:url, :internal_route)';
@@ -263,7 +258,6 @@ class Categories
 
                 // если ссылка существует, но новая ссылка не была передана, выполняем DELETE
             } else if ($linkCheckExist->link_id != null && !$this->category->url) {
-
                 // получить id существующей ссылки
                 // удалить существующую ссылку
                 // очистить поле link_id
@@ -280,9 +274,7 @@ class Categories
             }
 
             return true;
-
         }
-
         throw new BaseException('Произошла ошибка при редактировании категории.');
     }
 
@@ -295,16 +287,16 @@ class Categories
      */
     public function deleteCategory($token, $id)
     {
-        if (!Site::checkAccess($token)) {
+        if (! Site::checkAccess($token)) {
             throw new BaseException('Доступ запрещен.');
         }
 
-        if (!$id) {
+        if (! $id) {
             throw new BaseException('Не указан ID категории.');
         }
 
         // проверяем существование статьи перед ее редактированием
-        if (!$this->checkCategoryExist($id)) {
+        if (! $this->checkCategoryExist($id)) {
             throw new BaseException("Категории с ID = $id не существует.");
         }
 
@@ -387,8 +379,7 @@ class Categories
      */
     public function checkCategoryExist($id)
     {
-
-        if (!$id) {
+        if (! $id) {
             throw new BaseException('Не указан id категории.');
         }
 
@@ -425,7 +416,8 @@ class Categories
         return 0;
     }
 
-    public function validate(){
+    public function validate()
+    {
         $category = $this->category;
 
         if (strlen($category->title) < 2) {

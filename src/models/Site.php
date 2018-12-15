@@ -33,10 +33,10 @@ class Site
      */
     public static function login($login, $passwd)
     {
-        if(!$login){
+        if (! $login) {
             throw new BaseException('Введите логин.');
         }
-        if(!$passwd){
+        if (! $passwd) {
             throw new BaseException('Введите пароль.');
         }
 
@@ -48,7 +48,6 @@ class Site
         } else {
             throw new BaseException('Указан неверный логин или пароль.');
         }
-
     }
 
     /**
@@ -67,7 +66,7 @@ class Site
         $result->execute();
         $user = $result->fetch();
 
-        if(!$user){
+        if (! $user) {
             throw new BaseException('Пользователь не найден!');
         }
         return $user;
@@ -117,7 +116,6 @@ class Site
                 return true;
             }
         }
-
         return false;
     }
 
@@ -126,13 +124,12 @@ class Site
      * Метод нужен для проверки доступа перед отображением страниц админ панели
      * @return string|bool возращает либо токен либо false если токена нет
      */
-    public static function getTokenFromCookie(){
-
+    public static function getTokenFromCookie()
+    {
         if (isset($_COOKIE['token'])) {
             return $_COOKIE['token'];
 
         }
-
         return false;
     }
 
@@ -142,7 +139,8 @@ class Site
      * @param $content
      * @return null|string|string[]
      */
-    public static function replaceTags($content){
+    public static function replaceTags($content)
+    {
         $patterns[0] = '/&lt;pre&gt;&lt;code class=&quot;\w{1,5}&quot;&gt;/';
         $patterns[1] = '/&lt;\/code&gt;&lt;\/pre&gt;/';
         $patterns[2] = '/&lt;a\s.*?href=&quot;(.+?)&quot;.*?&gt;(.+?)&lt;\/a&gt;*/';
@@ -151,14 +149,15 @@ class Site
         $replacements[1] = '</code></pre>';
         $replacements[2] = '<a href="$1">$2</a>';
 
-        return preg_replace( $patterns, $replacements, $content);
+        return preg_replace($patterns, $replacements, $content);
     }
 
     /**
      * Возвращаем случайный цвет
      * @return mixed
      */
-    public static function randBgColor(){
+    public static function randBgColor()
+    {
         $colors = [
             '#8a2b2baa',
             '#8a2b6daa',
@@ -170,7 +169,6 @@ class Site
             '#3e8a2baa',
             '#898a2baa'
         ];
-
         return $colors[array_rand($colors)];
     }
 }

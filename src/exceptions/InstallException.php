@@ -6,7 +6,6 @@
 
 namespace Angryjack\exceptions;
 
-
 class InstallException extends \Exception
 {
 

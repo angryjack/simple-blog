@@ -41,4 +41,3 @@ return array(
     'category/([0-9]+)' => 'site/category/$1',
     '' => 'site/category'
 );
-

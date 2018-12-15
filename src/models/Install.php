@@ -10,13 +10,13 @@ use Angryjack\exceptions\InstallException;
 
 class Install
 {
-    private $_installPath = '../includes/';
+    private $installPath = '../includes/';
 
-    private $_data;
+    private $data;
 
     public function __construct()
     {
-        $this->_data = Site::getData();
+        $this->data = Site::getData();
     }
 
     /**
@@ -28,15 +28,15 @@ class Install
     public function createConfig()
     {
 
-        if (file_exists($this->_installPath . '/db_params.php')) {
+        if (file_exists($this->installPath . '/db_params.php')) {
             throw new InstallException('Сайт уже установлен. Удалите папку install.');
         }
 
-        if (!is_writable($this->_installPath)) {
-            throw new InstallException("Папка $this->_installPath доступна только для чтения.");
+        if (!is_writable($this->installPath)) {
+            throw new InstallException("Папка $this->installPath доступна только для чтения.");
         }
 
-        $db = $this->_data->db;
+        $db = $this->data->db;
 
         $db_params = '<?php return array(';
         $db_params .= " 'host' => '" . $db->host . "', ";
@@ -44,7 +44,7 @@ class Install
         $db_params .= " 'user' => '" . $db->dbUser . "', ";
         $db_params .= " 'password' => '" . $db->dbPassword . "' );";
 
-        return file_put_contents($this->_installPath . 'db_params.php', $db_params);
+        return file_put_contents($this->installPath . 'db_params.php', $db_params);
     }
 
     /**
@@ -54,15 +54,15 @@ class Install
      */
     public function importDataToDb()
     {
-        $sqlFile = $this->_installPath . 'install.sql';
+        $sqlFile = $this->installPath . 'install.sql';
 
-        if (!file_exists($sqlFile)) {
+        if (! file_exists($sqlFile)) {
             throw new InstallException('Установочный SQL файл не найден!');
         }
         $db = Db::getConnection();
         $result = $db->query(file_get_contents($sqlFile));
 
-        if (!$result) {
+        if (! $result) {
             throw new InstallException('Ошибка при создании базы данных.');
         }
 
@@ -76,15 +76,15 @@ class Install
      */
     public function clearDb()
     {
-        $sqlFile = $this->_installPath . 'delete.sql';
+        $sqlFile = $this->installPath . 'delete.sql';
 
-        if (!file_exists($sqlFile)) {
+        if (! file_exists($sqlFile)) {
             throw new InstallException('Установочный SQL файл не найден!');
         }
         $db = Db::getConnection();
         $result = $db->query(file_get_contents($sqlFile));
 
-        if (!$result) {
+        if (! $result) {
             throw new InstallException('Произошла ошибка при удалении таблиц.');
         }
 
@@ -99,8 +99,8 @@ class Install
      */
     public function createUser()
     {
-        $login = trim($this->_data->user->login);
-        $password = trim($this->_data->user->login);
+        $login = trim($this->data->user->login);
+        $password = trim($this->data->user->login);
 
         if (! empty($login)) {
             throw new InstallException('Логин не может быть пустым.');
@@ -128,8 +128,8 @@ class Install
      */
     public function deleteDbConfigFile()
     {
-        $configPath = $this->_installPath . 'db_params.php';
-        if (! file_exists($configPath)){
+        $configPath = $this->installPath . 'db_params.php';
+        if (! file_exists($configPath)) {
             throw new InstallException('Файл не существует или уже был удален.');
         }
 
@@ -145,7 +145,8 @@ class Install
      * @return bool
      * @throws \Exception
      */
-    public function deleteInstallator() {
-
+    public function deleteInstallator()
+    {
+        //
     }
 }

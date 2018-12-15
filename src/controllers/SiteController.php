@@ -9,6 +9,7 @@
  * Контроллер пользовательской части сайта
  */
 namespace Angryjack\controllers;
+
 use Angryjack\exceptions\BaseException;
 use Angryjack\models\Articles;
 use Angryjack\models\Categories;
@@ -18,10 +19,10 @@ class SiteController
 {
     /**
      * Отображаем главную страницу сайта
-     * @return bool
      */
     public function actionIndex()
     {
+        //
     }
 
     /**
@@ -37,8 +38,7 @@ class SiteController
             $title = $article->title;
             $description = $article->description;
             $keywords = $article->keywords;
-        }
-        catch (BaseException $e){
+        } catch (BaseException $e) {
             $message = $e->getMessage();
         }
 
@@ -58,7 +58,7 @@ class SiteController
     {
         try {
             //если нет категории, то это главная страница
-            if($id){
+            if ($id) {
                 $categoryManager = new Categories();
                 $category = $categoryManager->getCategory($id);
                 $title = "Категория: $category->title";
@@ -68,8 +68,7 @@ class SiteController
             $articleManager = new Articles();
             $articles = $articleManager->getArticles($id, $page);
 
-        }
-        catch (BaseException $e){
+        } catch (BaseException $e) {
             $message = $e->getMessage();
         }
 
@@ -78,5 +77,4 @@ class SiteController
         require_once(ROOT . '/src/views/site/index.php');
         return true;
     }
-
 }

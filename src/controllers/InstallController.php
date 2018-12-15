@@ -5,6 +5,7 @@
  * Date: 18.08.2018 22:08
  */
 namespace Angryjack\controllers;
+
 use Angryjack\models\Db;
 use Angryjack\models\Install;
 
@@ -14,7 +15,8 @@ class InstallController
     /**
      * InstallController constructor.
      */
-    public function __construct() {
+    public function __construct()
+    {
         //todo сделать проверку на установщик
     }
 
@@ -37,8 +39,7 @@ class InstallController
             Db::getConnection();
             $result['status'] = 'success';
             $result['message'] = "Подключение успешно установлено!";
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $result['status'] = 'error';
             $result['message'] = $e->getMessage();
         }
@@ -66,8 +67,7 @@ class InstallController
             //делаем импорт в базу данных
             $installer->importDataToDb();
             $result['status'] = 'success';
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             $result['status'] = 'error';
             $result['message'] = $e->getMessage();
         }
@@ -86,8 +86,7 @@ class InstallController
             $installer = new Install();
             $installer->createUser();
             $result['status'] = 'success';
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             $result['status'] = 'error';
             $result['message'] = $e->getMessage();
         }
@@ -104,8 +103,7 @@ class InstallController
             $installer = new Install();
             $installer->deleteDbConfigFile();
             $result['status'] = 'success';
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             $result['status'] = 'error';
             $result['message'] = $e->getMessage();
         }
@@ -117,13 +115,13 @@ class InstallController
      * Удаляем установщик после успешной установки
      * @throws \Exception
      */
-    public function actionDeleteInstaller(){
+    public function actionDeleteInstaller()
+    {
         try {
             $installer = new Install();
             $installer->deleteInstallator();
             $result['status'] = 'success';
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             $result['status'] = 'error';
             $result['message'] = $e->getMessage();
         }
@@ -135,14 +133,14 @@ class InstallController
      * Удаляем таблицы из базы данных
      * @throws \Exception
      */
-    public function actionClearDb(){
+    public function actionClearDb()
+    {
         try {
             $installer = new Install();
             $installer->clearDb();
             $result['status'] = 'success';
             $result['message'] = 'База данных успешно очищена!';
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             $result['status'] = 'error';
             $result['message'] = $e->getMessage();
         }

@@ -30,7 +30,7 @@ class Router
         // если запрос не на установку и нет параметров у базы данных, то считаем что сайт не установлен
         if (! $flag && ! file_exists('../src/includes/db_params.php')) {
             header('Location: /install');
-            exit ('Cайт не установлен. Вы будете перенаправлены на страницу установки.');
+            exit('Cайт не установлен. Вы будете перенаправлены на страницу установки.');
         }
         //todo подумать над тем, что на установленном сайте можно перейти к установщику
         if ($flag) {
@@ -45,9 +45,10 @@ class Router
      */
     private function getURI()
     {
-        if (!empty($_SERVER['REQUEST_URI'])) {
+        if (! empty($_SERVER['REQUEST_URI'])) {
             return trim($_SERVER['REQUEST_URI'], '/');
         }
+        return false;
     }
 
     public function getRoutesFromDB()
@@ -75,10 +76,8 @@ class Router
 
         // Проверяем наличие такого запроса в массиве маршрутов (routes.php)
         foreach ($this->routes as $uriPattern => $path) {
-
             // Сравниваем $uriPattern и $uri
             if (preg_match("~$uriPattern~", $uri)) {
-
                 // Получаем внутренний путь из внешнего согласно правилу.
                 $internalRoute = preg_replace("~$uriPattern~", $path, $uri);
 
@@ -108,5 +107,4 @@ class Router
             }
         }
     }
-
 }

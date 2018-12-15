@@ -7,7 +7,6 @@
 
 namespace Angryjack\exceptions;
 
-
 class BaseException extends \Exception
 {
 

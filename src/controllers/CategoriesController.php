@@ -6,6 +6,7 @@
  */
 
 namespace Angryjack\controllers;
+
 use Angryjack\exceptions\BaseException;
 use Angryjack\models\Categories;
 use Angryjack\models\Site;
@@ -36,8 +37,7 @@ class CategoriesController
 
             $result['status'] = 'success';
             $result['answer']['data'] = $categories;
-        }
-        catch (BaseException $e) {
+        } catch (BaseException $e) {
             $result['status'] = 'error';
             $result['answer']['text'] = $e->getMessage();
         }
@@ -61,8 +61,7 @@ class CategoriesController
 
             $result['status'] = 'success';
             $result['answer']['data'] = $category;
-        }
-        catch (BaseException $e){
+        } catch (BaseException $e) {
             $result['status'] = 'error';
             $result['answer']['text'] = $e->getMessage();
         }
@@ -92,8 +91,7 @@ class CategoriesController
             $result['answer']['text'] = 'Новость упешно создана.';
             $result['answer']['code'] = 'CATEGORY_CREATE_SUCCESS';
 
-        }
-        catch (BaseException $e){
+        } catch (BaseException $e) {
             $result['status'] = 'error';
             $result['answer']['text'] = $e->getMessage();
         }
@@ -108,7 +106,7 @@ class CategoriesController
      */
     public function actionEditCategory()
     {
-        try{
+        try {
             $data = Site::getData();
 
             if (!Site::checkAccess($data->token)) {
@@ -121,8 +119,7 @@ class CategoriesController
             $result['status'] = 'success';
             $result['answer']['text'] = 'Категория упешно отредактирована.';
             $result['answer']['code'] = 'CATEGORY_EDIT_SUCCESS';
-        }
-        catch (BaseException $e){
+        } catch (BaseException $e) {
             $result['status'] = 'error';
             $result['answer']['text'] = $e->getMessage();
         }
@@ -138,7 +135,6 @@ class CategoriesController
     public function actionDeleteCategory()
     {
         try {
-
             $data = Site::getData();
 
             if (!Site::checkAccess($data->token)) {
@@ -151,8 +147,7 @@ class CategoriesController
             $result['status'] = 'success';
             $result['answer']['text'] = 'Категория упешно удалена.';
             $result['answer']['code'] = 'CATEGORY_DELETE_SUCCESS';
-        }
-        catch (BaseException $e){
+        } catch (BaseException $e) {
             $result['status'] = 'error';
             $result['answer']['text'] = $e->getMessage();
         }
@@ -163,7 +158,8 @@ class CategoriesController
     /**
      * Поиск категории по заголовку
      */
-    public static function actionSearchCategories(){
+    public static function actionSearchCategories()
+    {
         try {
             $data = Site::getData();
 

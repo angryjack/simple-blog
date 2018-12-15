@@ -6,6 +6,7 @@
  */
 
 namespace Angryjack\models;
+
 use Angryjack\exceptions\BaseException;
 use PDO;
 
@@ -30,7 +31,7 @@ class Articles
     public function getArticles($category = false, $page = 1)
     {
         $page = intval($page);
-        if($category){
+        if( $category) {
             $category = intval($category);
         }
         $limit = 20;
@@ -39,7 +40,7 @@ class Articles
         $db = Db::getConnection();
         // если категория передана, то дописываем к нашему запросу условие WHERE
         $whereClause = '';
-        if($category){
+        if ($category) {
             $whereClause = 'WHERE articles.category = :category';
         }
         $sql = 'SELECT articles.id AS "id",
@@ -56,7 +57,7 @@ class Articles
                 ' ORDER BY id DESC
                 LIMIT :limit OFFSET :offset';
         $stmt = $db->prepare($sql);
-        if($category){
+        if ($category) {
             $stmt->bindParam(':category', $category, PDO::PARAM_INT);
         }
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
@@ -65,7 +66,7 @@ class Articles
         $stmt->execute();
         $articles = $stmt->fetchAll();
 
-        if(!$articles){
+        if (! $articles) {
             throw new BaseException('Статей нет.');
         }
 
@@ -79,7 +80,7 @@ class Articles
      */
     public function getArticle($id)
     {
-        if(!$id){
+        if (! $id) {
             throw new BaseException('Не указан id статьи.');
         }
 
@@ -102,7 +103,7 @@ class Articles
         $stmt->execute();
         $article = $stmt->fetch();
 
-        if(!$article){
+        if (! $article) {
             throw new BaseException("Статья с $id ID не найдена.");
         }
 
@@ -145,7 +146,8 @@ class Articles
         }
 
         $db = Db::getConnection();
-        $sql = 'INSERT INTO articles (title, content, category, description, keywords, create_date) VALUES (:title, :content, :category, :description, :keywords, UNIX_TIMESTAMP())';
+        $sql = 'INSERT INTO articles (title, content, category, description, keywords, create_date) 
+                VALUES (:title, :content, :category, :description, :keywords, UNIX_TIMESTAMP())';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':title', $this->article->title, PDO::PARAM_STR);
         $stmt->bindParam(':content', $this->article->content, PDO::PARAM_STR);
@@ -178,7 +180,6 @@ class Articles
         }
 
         throw new BaseException('Произошла ошибка при создании статьи.');
-
     }
 
     /**
@@ -196,16 +197,16 @@ class Articles
      */
     public function editArticle($token, $id)
     {
-        if (!Site::checkAccess($token)) {
+        if (! Site::checkAccess($token)) {
             throw new BaseException('Доступ запрещен.');
         }
 
-        if (!$id) {
+        if (! $id) {
             throw new BaseException('Не указан ID статьи.');
         }
 
         // проверяем существование статьи перед ее редактированием
-        if (!$this->checkArticleExist($id)) {
+        if (! $this->checkArticleExist($id)) {
             throw new BaseException("Статьи с ID = $id не существует.");
         }
 
@@ -230,7 +231,11 @@ class Articles
 
         $db = Db::getConnection();
         $sql = 'UPDATE articles 
-                SET title = :title, content = :content, category = :category, description = :description, keywords = :keywords
+                SET title = :title,
+                    content = :content,
+                    category = :category,
+                    description = :description,
+                    keywords = :keywords
                 WHERE id = :id';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':title', $this->article->title, PDO::PARAM_STR);
@@ -240,7 +245,6 @@ class Articles
         $stmt->bindParam(':keywords', $this->article->keywords, PDO::PARAM_STR);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         if ($stmt->execute()) {
-
             //проверяем закреплена ли ЧПУ за статьей
             $db = Db::getConnection();
             $sql = 'SELECT link_id FROM articles WHERE id = :id';
@@ -252,18 +256,15 @@ class Articles
 
             //если ссылка закреплена и новая ссылка передана выполняем UPDATE
             if ($linkCheckExist->link_id != null && $this->article->url) {
-
                 $db = Db::getConnection();
                 $sql = 'UPDATE routes SET url = :url WHERE id = :id';
                 $stmt = $db->prepare($sql);
                 $stmt->bindParam(':url', $this->article->url, PDO::PARAM_STR);
                 $stmt->bindParam(':id', $linkCheckExist->link_id, PDO::PARAM_INT);
                 $stmt->execute();
-
-                // если ссылка не существует, но новая ссылка была передана, выполняем INSERT в таблицу ссылок и связываем
+                //если ссылка не существует, но новая ссылка была передана, выполняем INSERT и связываем
                 // с таблицей статей
             } else if ($linkCheckExist->link_id == null && $this->article->url) {
-
                 $db = Db::getConnection();
                 $internal_route = "site/article/$id";
                 $sql = 'INSERT INTO routes (url, internal_route) VALUES (:url, :internal_route)';
@@ -281,7 +282,6 @@ class Articles
 
                 // если ссылка существует, но новая ссылка не была передана, выполняем DELETE
             } else if ($linkCheckExist->link_id != null && !$this->article->url) {
-
                 // получить id существующей ссылки
                 // удалить существующую ссылку
                 // очистить поле link_id
@@ -296,11 +296,8 @@ class Articles
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
             }
-
             return true;
-
         }
-
         throw new BaseException('Произошла ошибка при редактировании статьи.');
     }
 
@@ -313,16 +310,16 @@ class Articles
      */
     public function deleteArticle($token, $id)
     {
-        if (!Site::checkAccess($token)) {
+        if (! Site::checkAccess($token)) {
             throw new BaseException('Доступ запрещен.');
         }
 
-        if (!$id) {
+        if (! $id) {
             throw new BaseException('Не указан ID статьи.');
         }
 
         // проверяем существование статьи перед ее редактированием
-        if (!self::checkArticleExist($id)) {
+        if (! self::checkArticleExist($id)) {
             throw new BaseException("Статьи с ID = $id не существует.");
         }
 
@@ -360,9 +357,9 @@ class Articles
      * @return array
      * @throws BaseException
      */
-    public function searchArticles($search){
-
-        if (strlen($search) < 2 ) {
+    public function searchArticles($search)
+    {
+        if (strlen($search) < 2) {
             throw new BaseException('Строка поиска слишком короткая.');
         }
         $db = Db::getConnection();
@@ -395,9 +392,9 @@ class Articles
      * @return bool - true если статья существует, false - статья не существует
      * @throws BaseException
      */
-    public function checkArticleExist($id){
-
-        if(!$id){
+    public function checkArticleExist($id)
+    {
+        if (! $id) {
             throw new BaseException('Не указан id статьи.');
         }
 
@@ -409,10 +406,9 @@ class Articles
         $stmt->execute();
         $article = $stmt->fetch();
 
-        if($article){
+        if ($article) {
             return true;
         }
-
         return false;
     }
 
@@ -434,33 +430,33 @@ class Articles
         return 0;
     }
 
-    public function validateArticle(){
+    public function validateArticle()
+    {
         $article = $this->article;
 
-        if(!isset($article->title) || strlen($article->title) < 2){
+        if (! isset($article->title) || strlen($article->title) < 2) {
             throw new BaseException('Заголовок новости слишком короткий.');
         }
 
-        if(!isset($article->content) || strlen($article->content) < 5){
+        if (! isset($article->content) || strlen($article->content) < 5) {
             throw new BaseException('Содержимое статьи слишком короткое.');
         }
 
-        if (!isset($article->category) || strlen(trim($article->category)) == 0) {
+        if (! isset($article->category) || strlen(trim($article->category)) == 0) {
             $article->category = 0;
         }
-        if (!isset($article->url)) {
+        if (! isset($article->url)) {
             $article->url = false;
         }
-        if (!isset($article->description)) {
+        if (! isset($article->description)) {
             $article->description = false;
         }
-        if (!isset($article->keywords)) {
+        if (! isset($article->keywords)) {
             $article->keywords = false;
         }
         if (isset($article->url)) {
             $article->url = trim($article->url);
         }
-
         return $article;
     }
 }
