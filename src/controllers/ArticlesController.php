@@ -8,7 +8,7 @@
 namespace Angryjack\controllers;
 
 use Angryjack\exceptions\BaseException;
-use Angryjack\models\Articles;
+use Angryjack\models\Article;
 use Angryjack\models\Site;
 
 /**
@@ -30,7 +30,7 @@ class ArticlesController
             } else {
                 $page = 1;
             }
-            $articleManager = new Articles();
+            $articleManager = new Article();
             $articles = $articleManager->getArticles(false, $page);
 
             $result['status'] = 'success';
@@ -53,7 +53,7 @@ class ArticlesController
     {
         try {
             $data = Site::getData();
-            $articleManager = new Articles($data);
+            $articleManager = new Article($data);
             $article = $articleManager->getArticle($data->id);
 
             $result['status'] = 'success';
@@ -83,7 +83,7 @@ class ArticlesController
                 throw new BaseException('Доступ запрещен.');
             }
 
-            $articleManager = new Articles($data);
+            $articleManager = new Article($data);
             $articleManager->createArticle($data->token);
 
             $result['status'] = 'success';
@@ -117,7 +117,7 @@ class ArticlesController
                 throw new BaseException('Не указан id статьи.');
             }
 
-            $articleManager = new Articles($data);
+            $articleManager = new Article($data);
             $articleManager->editArticle($data->token, $data->id);
 
             $result['status'] = 'success';
@@ -151,7 +151,7 @@ class ArticlesController
                 throw new BaseException('Не указан id статьи.');
             }
 
-            $articleManager = new Articles();
+            $articleManager = new Article();
             $articleManager->deleteArticle($data->token, $data->id);
 
             $result['status'] = 'success';
@@ -180,7 +180,7 @@ class ArticlesController
             if (!isset($data->search)) {
                 throw new BaseException('Не заданы условия поиска.');
             }
-            $articleManager = new Articles();
+            $articleManager = new Article();
             $articles = $articleManager->search($data->search);
 
             $result['status'] = 'success';

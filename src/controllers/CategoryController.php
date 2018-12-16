@@ -8,14 +8,14 @@
 namespace Angryjack\controllers;
 
 use Angryjack\exceptions\BaseException;
-use Angryjack\models\Categories;
+use Angryjack\models\Category;
 use Angryjack\models\Site;
 
 /**
  * Class categoriesController Котроллер категорий
  * @package Angryjack\controllers
  */
-class CategoriesController
+class CategoryController
 {
     /**
      * Получаем список категорий (клиентская часть)
@@ -32,7 +32,7 @@ class CategoriesController
                 $page = 1;
             }
 
-            $categoryManager = new Categories();
+            $categoryManager = new Category();
             $categories = $categoryManager->getCategories($page);
 
             $result['status'] = 'success';
@@ -56,7 +56,7 @@ class CategoriesController
         try {
             $data = Site::getData();
 
-            $categoryManager = new Categories();
+            $categoryManager = new Category();
             $category = $categoryManager->getCategory($data->id);
 
             $result['status'] = 'success';
@@ -84,7 +84,7 @@ class CategoriesController
                 throw new BaseException('Доступ запрещен.');
             }
 
-            $categoryManager = new Categories($data);
+            $categoryManager = new Category($data);
             $categoryManager->createCategory($data->token);
 
             $result['status'] = 'success';
@@ -113,7 +113,7 @@ class CategoriesController
                 throw new BaseException('Доступ запрещен.');
             }
 
-            $categoryManager = new Categories($data);
+            $categoryManager = new Category($data);
             $categoryManager->editCategory($data->token, $data->id);
 
             $result['status'] = 'success';
@@ -141,7 +141,7 @@ class CategoriesController
                 throw new BaseException('Доступ запрещен.');
             }
 
-            $categoryManager = new Categories();
+            $categoryManager = new Category();
             $categoryManager->deleteCategory($data->token, $data->id);
 
             $result['status'] = 'success';
@@ -163,7 +163,7 @@ class CategoriesController
         try {
             $data = Site::getData();
 
-            $categoryManager = new Categories();
+            $categoryManager = new Category();
             $categories = $categoryManager->searchCategories($data->search);
 
             $result['status'] = 'success';

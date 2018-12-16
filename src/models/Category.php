@@ -8,10 +8,13 @@
 namespace Angryjack\models;
 
 use Angryjack\exceptions\BaseException;
+use Angryjack\helpers\LinkHelper;
 use PDO;
 
-class Categories
+class Category
 {
+    use LinkHelper;
+
     public $category;
 
     public function __construct($category = false)
@@ -117,15 +120,7 @@ class Categories
 
         // если ЧПУ передан, проверяем, существует ли он
         if ($this->category->url) {
-            $db = Db::getConnection();
-            $sql = 'SELECT url FROM routes WHERE url = :url';
-            $stmt = $db->prepare($sql);
-            $stmt->bindParam(':url', $this->category->url, PDO::PARAM_STR);
-            $stmt->setFetchMode(PDO::FETCH_OBJ);
-            $stmt->execute();
-            $check = $stmt->fetch();
-
-            if ($check) {
+            if (LinkHelper::checkExistence($this->category->url)) {
                 throw new BaseException('Данная короткая ссылка уже используется.');
             }
         }
@@ -194,17 +189,9 @@ class Categories
 
         // если ЧПУ передан, проверяем, существует ли он
         if ($this->category->url) {
-            $db = Db::getConnection();
-            $sql = 'SELECT url FROM routes WHERE url = :url';
-            $stmt = $db->prepare($sql);
-            $stmt->bindParam(':url', $this->category->url, PDO::PARAM_STR);
-            $stmt->setFetchMode(PDO::FETCH_OBJ);
-            $stmt->execute();
-            $check = $stmt->fetch();
-
             // если ссылка уже существует, но закреплена за другим элементом
             $category = self::getCategory($id);
-            if ($check && $category->url != $this->category->url) {
+            if ($this->category->url && $category->url != $this->category->url) {
                 throw new BaseException('Данная ссылка уже занята.');
             }
         }

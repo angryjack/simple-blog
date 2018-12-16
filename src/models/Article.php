@@ -8,13 +8,16 @@
 namespace Angryjack\models;
 
 use Angryjack\exceptions\BaseException;
+use Angryjack\helpers\LinkHelper;
 use PDO;
 
 /**
  * Модель по работе с новостями на сайте
  */
-class Articles
+class Article
 {
+    use LinkHelper;
+
     public $article;
 
     public function __construct($article = false)
@@ -31,7 +34,7 @@ class Articles
     public function getArticles($category = false, $page = 1)
     {
         $page = intval($page);
-        if( $category) {
+        if ($category) {
             $category = intval($category);
         }
         $limit = 20;
@@ -132,15 +135,7 @@ class Articles
 
         // если ЧПУ передан, проверяем, существует ли он
         if ($this->article->url) {
-            $db = Db::getConnection();
-            $sql = 'SELECT url FROM routes WHERE url = :url';
-            $stmt = $db->prepare($sql);
-            $stmt->bindParam(':url', $this->article->url, PDO::PARAM_STR);
-            $stmt->setFetchMode(PDO::FETCH_OBJ);
-            $stmt->execute();
-            $check = $stmt->fetch();
-
-            if ($check) {
+            if (LinkHelper::checkExistence($this->article->url)) {
                 throw new BaseException('Данная короткая ссылка уже используется.');
             }
         }
@@ -214,17 +209,9 @@ class Articles
 
         // если ЧПУ передан, проверяем, существует ли он
         if ($this->article->url) {
-            $db = Db::getConnection();
-            $sql = 'SELECT url FROM routes WHERE url = :url';
-            $stmt = $db->prepare($sql);
-            $stmt->bindParam(':url', $this->article->url, PDO::PARAM_STR);
-            $stmt->setFetchMode(PDO::FETCH_OBJ);
-            $stmt->execute();
-            $check = $stmt->fetch();
-
             // если ссылка уже существует, но закреплена за другим элементом
             $article = $this->getArticle($id);
-            if ($check && $article->url != $this->article->url) {
+            if (LinkHelper::checkExistence($this->article->url) && $article->url != $this->article->url) {
                 throw new BaseException('Данная ссылка уже занята.');
             }
         }

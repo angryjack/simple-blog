@@ -11,8 +11,8 @@
 namespace Angryjack\controllers;
 
 use Angryjack\exceptions\BaseException;
-use Angryjack\models\Articles;
-use Angryjack\models\Categories;
+use Angryjack\models\Article;
+use Angryjack\models\Category;
 
 
 class SiteController
@@ -33,7 +33,7 @@ class SiteController
     public function actionArticle($id)
     {
         try {
-            $articleManager = new Articles();
+            $articleManager = new Article();
             $article = $articleManager->getArticle($id);
             $title = $article->title;
             $description = $article->description;
@@ -59,14 +59,14 @@ class SiteController
         try {
             //если нет категории, то это главная страница
             if ($id) {
-                $categoryManager = new Categories();
+                $categoryManager = new Category();
                 $category = $categoryManager->getCategory($id);
                 $title = "Категория: $category->title";
                 $description = $category->description;
                 $keywords = $category->keywords;
             }
-            $articleManager = new Articles();
-            $articles = $articleManager->getArticles($id, $page);
+            $articleManager = new Article();
+            $article = $articleManager->getArticles($id, $page);
 
         } catch (BaseException $e) {
             $message = $e->getMessage();
