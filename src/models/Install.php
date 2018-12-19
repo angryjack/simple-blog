@@ -10,7 +10,7 @@ use Angryjack\exceptions\InstallException;
 
 class Install
 {
-    private $installPath = '../includes/';
+    private $installPath = __DIR__ . '/../includes/';
 
     private $data;
 
@@ -40,9 +40,9 @@ class Install
 
         $db_params = '<?php return array(';
         $db_params .= " 'host' => '" . $db->host . "', ";
-        $db_params .= " 'name' => '" . $db->dbName . "', ";
-        $db_params .= " 'user' => '" . $db->dbUser . "', ";
-        $db_params .= " 'password' => '" . $db->dbPassword . "' );";
+        $db_params .= " 'name' => '" . $db->name . "', ";
+        $db_params .= " 'user' => '" . $db->user . "', ";
+        $db_params .= " 'password' => '" . $db->password . "' );";
 
         return file_put_contents($this->installPath . 'db_params.php', $db_params);
     }

@@ -98,7 +98,8 @@ class InstallController
      * Отменяем установку
      * @throws \Exception
      */
-    public function actionUndoInstall(){
+    public function actionUndoInstall()
+    {
         try {
             $installer = new Install();
             $installer->deleteDbConfigFile();
