@@ -15,7 +15,7 @@ use Angryjack\models\Site;
  * Class articlesController Контроллер статей
  * @package Angryjack\controllers
  */
-class ArticlesController
+class ArticleController
 {
     /**
      * Получения всех статей
