@@ -21,7 +21,6 @@ class Install
 
     /**
      * Создаем конфиг Базы данных
-     * @param $db
      * @return bool|int
      * @throws InstallException
      */
@@ -93,8 +92,6 @@ class Install
 
     /**
      * Создаем пользователя
-     * @param $login
-     * @param $password
      * @throws \Exception
      */
     public function createUser()
@@ -142,8 +139,6 @@ class Install
 
     /**
      * Удаление установщика
-     * @return bool
-     * @throws \Exception
      */
     public function deleteInstallator()
     {
