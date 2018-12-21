@@ -58,7 +58,7 @@ class Db
     {
         $dsn = "mysql:host=" . self::$params['host'] . ";dbname=" . self::$params['name'];
         $connection = new PDO($dsn, self::$params['user'], self::$params['password']);
-        $connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $connection->exec("set names utf8");
 
