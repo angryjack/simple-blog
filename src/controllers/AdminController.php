@@ -8,9 +8,9 @@
 namespace Angryjack\controllers;
 
 use Angryjack\exceptions\BaseException;
-use Angryjack\models\Site;
+use Angryjack\models\User;
 
-class AdminController
+class AdminController extends Controller
 {
     /**
      * Форма входа в админ панель
@@ -29,8 +29,8 @@ class AdminController
     public function actionDoLogin()
     {
         try {
-            $data = Site::getData(false);
-            $token = Site::login($data->login, $data->password);
+            $data = parent::getData(false);
+            $token = (new User)->login($data->login, $data->password);
             $result['status'] = 'success';
             $result['answer']['data'] = $token;
 
@@ -39,7 +39,7 @@ class AdminController
             $result['answer']['text'] = $e->getMessage();
         }
 
-        echo json_encode($result);
+        echo parent::printJson($result);
         return true;
     }
 

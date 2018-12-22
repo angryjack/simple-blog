@@ -8,12 +8,12 @@
 namespace Angryjack\models;
 
 use Angryjack\exceptions\BaseException;
-use Angryjack\helpers\LinkHelper;
+use Angryjack\helpers\Link;
 use PDO;
 
 class Category
 {
-    use LinkHelper;
+    use Link;
 
     public $category;
 
@@ -120,7 +120,7 @@ class Category
 
         // если ЧПУ передан, проверяем, существует ли он
         if ($this->category->url) {
-            if (LinkHelper::checkExistence($this->category->url)) {
+            if (Link::checkExistence($this->category->url)) {
                 throw new BaseException('Данная короткая ссылка уже используется.');
             }
         }

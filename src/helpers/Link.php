@@ -8,7 +8,7 @@ namespace Angryjack\helpers;
 
 use Angryjack\models\Db;
 
-trait LinkHelper
+trait Link
 {
     /**
      * Проверяем существование ЧПУ

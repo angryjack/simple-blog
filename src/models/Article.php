@@ -8,7 +8,7 @@
 namespace Angryjack\models;
 
 use Angryjack\exceptions\BaseException;
-use Angryjack\helpers\LinkHelper;
+use Angryjack\helpers\Link;
 use PDO;
 
 /**
@@ -16,7 +16,7 @@ use PDO;
  */
 class Article
 {
-    use LinkHelper;
+    use Link;
 
     public $article;
 
@@ -135,7 +135,7 @@ class Article
 
         // если ЧПУ передан, проверяем, существует ли он
         if ($this->article->url) {
-            if (LinkHelper::checkExistence($this->article->url)) {
+            if (Link::checkExistence($this->article->url)) {
                 throw new BaseException('Данная короткая ссылка уже используется.');
             }
         }
@@ -211,7 +211,7 @@ class Article
         if ($this->article->url) {
             // если ссылка уже существует, но закреплена за другим элементом
             $article = $this->getArticle($id);
-            if (LinkHelper::checkExistence($this->article->url) && $article->url != $this->article->url) {
+            if (Link::checkExistence($this->article->url) && $article->url != $this->article->url) {
                 throw new BaseException('Данная ссылка уже занята.');
             }
         }
