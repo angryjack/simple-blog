@@ -7,6 +7,7 @@
 
 namespace Angryjack\models;
 
+use Angryjack\helpers\Request;
 use PDO;
 
 /**
@@ -16,6 +17,8 @@ use PDO;
  */
 class Db
 {
+    use Request;
+
     protected static $instance;
     private static $params;
 
@@ -74,7 +77,7 @@ class Db
         $paramsPath = '../includes/db_params.php';
 
         if (! file_exists($paramsPath)) {
-            $db = Site::getData()->db;
+            $db = Request::getData()->db;
 
             self::$params = array(
                 'host' => $db->host,

@@ -9,13 +9,12 @@ namespace Angryjack\controllers;
 
 use Angryjack\exceptions\BaseException;
 use Angryjack\models\Category;
-use Angryjack\models\Site;
 
 /**
  * Class categoriesController Котроллер категорий
  * @package Angryjack\controllers
  */
-class CategoryController
+class CategoryController extends Controller
 {
     /**
      * Получаем список категорий (клиентская часть)
@@ -25,7 +24,7 @@ class CategoryController
     public function actionGetCategories()
     {
         try {
-            $data = Site::getData(false);
+            $data = parent::getData(false);
             if ($data->page) {
                 $page = intval($data->page);
             } else {
@@ -54,7 +53,7 @@ class CategoryController
     public function actionGetCategory()
     {
         try {
-            $data = Site::getData();
+            $data = parent::getData();
 
             $categoryManager = new Category();
             $category = $categoryManager->getCategory($data->id);
@@ -78,9 +77,9 @@ class CategoryController
     public function actionAddCategory()
     {
         try {
-            $data = Site::getData(false);
+            $data = parent::getData(false);
 
-            if (!Site::checkAccess($data->token)) {
+            if (! parent::checkAccess($data->token)) {
                 throw new BaseException('Доступ запрещен.');
             }
 
@@ -107,9 +106,9 @@ class CategoryController
     public function actionEditCategory()
     {
         try {
-            $data = Site::getData();
+            $data = parent::getData();
 
-            if (!Site::checkAccess($data->token)) {
+            if (!parent::checkAccess($data->token)) {
                 throw new BaseException('Доступ запрещен.');
             }
 
@@ -135,9 +134,9 @@ class CategoryController
     public function actionDeleteCategory()
     {
         try {
-            $data = Site::getData();
+            $data = parent::getData();
 
-            if (!Site::checkAccess($data->token)) {
+            if (!parent::checkAccess($data->token)) {
                 throw new BaseException('Доступ запрещен.');
             }
 
@@ -161,7 +160,7 @@ class CategoryController
     public static function actionSearchCategories()
     {
         try {
-            $data = Site::getData();
+            $data = parent::getData();
 
             $categoryManager = new Category();
             $categories = $categoryManager->searchCategories($data->search);

@@ -8,12 +8,9 @@ namespace Angryjack\models;
 
 use PDO;
 use Angryjack\helpers\Token;
-use Angryjack\exceptions\UserException;
 
-class User
+class User extends Model
 {
-    use Token;
-
     /**
      * Метод входа в админ панель
      * @param $login - логин
@@ -26,7 +23,7 @@ class User
         $user = self::checkUserExist($login);
 
         if (password_verify($passwd, $user->passwd)) {
-            return self::generateToken($login);
+            return parent::generateToken($login);
         }
         return null;
     }

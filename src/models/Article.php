@@ -14,10 +14,8 @@ use PDO;
 /**
  * Модель по работе с новостями на сайте
  */
-class Article
+class Article extends Model
 {
-    use Link;
-
     public $article;
 
     public function __construct($article = false)
@@ -27,6 +25,7 @@ class Article
 
     /**
      * Получаем статьи
+     * @param bool $category
      * @param int $page страница
      * @return array возвращает массив со статьями
      * @throws BaseException - ошибки
@@ -127,7 +126,7 @@ class Article
      */
     public function createArticle($token)
     {
-        if (!Site::checkAccess($token)) {
+        if (! parent::checkAccess($token)) {
             throw new BaseException('Доступ запрещен.');
         }
 
@@ -135,7 +134,7 @@ class Article
 
         // если ЧПУ передан, проверяем, существует ли он
         if ($this->article->url) {
-            if (Link::checkExistence($this->article->url)) {
+            if (parent::checkExistence($this->article->url)) {
                 throw new BaseException('Данная короткая ссылка уже используется.');
             }
         }
@@ -192,7 +191,7 @@ class Article
      */
     public function editArticle($token, $id)
     {
-        if (! Site::checkAccess($token)) {
+        if (! parent::checkAccess($token)) {
             throw new BaseException('Доступ запрещен.');
         }
 
@@ -297,7 +296,7 @@ class Article
      */
     public function deleteArticle($token, $id)
     {
-        if (! Site::checkAccess($token)) {
+        if (! parent::checkAccess($token)) {
             throw new BaseException('Доступ запрещен.');
         }
 

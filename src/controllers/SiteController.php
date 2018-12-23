@@ -14,7 +14,6 @@ use Angryjack\exceptions\BaseException;
 use Angryjack\models\Article;
 use Angryjack\models\Category;
 
-
 class SiteController
 {
     /**

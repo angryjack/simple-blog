@@ -11,10 +11,8 @@ use Angryjack\exceptions\BaseException;
 use Angryjack\helpers\Link;
 use PDO;
 
-class Category
+class Category extends Model
 {
-    use Link;
-
     public $category;
 
     public function __construct($category = false)
@@ -112,7 +110,7 @@ class Category
     public function createCategory($token)
     {
 
-        if (! Site::checkAccess($token)) {
+        if (! parent::checkAccess($token)) {
             throw new BaseException('Доступ запрещен.');
         }
 
@@ -120,7 +118,7 @@ class Category
 
         // если ЧПУ передан, проверяем, существует ли он
         if ($this->category->url) {
-            if (Link::checkExistence($this->category->url)) {
+            if (parent::checkExistence($this->category->url)) {
                 throw new BaseException('Данная короткая ссылка уже используется.');
             }
         }
@@ -172,7 +170,7 @@ class Category
      */
     public function editCategory($token, $id)
     {
-        if (! Site::checkAccess($token)) {
+        if (! parent::checkAccess($token)) {
             throw new BaseException('Доступ запрещен.');
         }
 
@@ -274,7 +272,7 @@ class Category
      */
     public function deleteCategory($token, $id)
     {
-        if (! Site::checkAccess($token)) {
+        if (! parent::checkAccess($token)) {
             throw new BaseException('Доступ запрещен.');
         }
 

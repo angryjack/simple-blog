@@ -9,13 +9,12 @@ namespace Angryjack\controllers;
 
 use Angryjack\exceptions\BaseException;
 use Angryjack\models\Article;
-use Angryjack\models\Site;
 
 /**
  * Class articlesController Контроллер статей
  * @package Angryjack\controllers
  */
-class ArticleController
+class ArticleController extends Controller
 {
     /**
      * Получения всех статей
@@ -24,7 +23,7 @@ class ArticleController
     public function actionGetArticles()
     {
         try {
-            $data = Site::getData();
+            $data = parent::getData();
             if ($data->page) {
                 $page = intval($data->page);
             } else {
@@ -52,7 +51,7 @@ class ArticleController
     public function actionGetArticle()
     {
         try {
-            $data = Site::getData();
+            $data = parent::getData();
             $articleManager = new Article($data);
             $article = $articleManager->getArticle($data->id);
 
@@ -77,9 +76,9 @@ class ArticleController
     public function actionAddArticle()
     {
         try {
-            $data = Site::getData();
+            $data = parent::getData();
 
-            if (!Site::checkAccess($data->token)) {
+            if (! parent::checkAccess($data->token)) {
                 throw new BaseException('Доступ запрещен.');
             }
 
@@ -107,9 +106,9 @@ class ArticleController
     public function actionEditArticle()
     {
         try {
-            $data = Site::getData(false);
+            $data = parent::getData(false);
 
-            if (!Site::checkAccess($data->token)) {
+            if (! parent::checkAccess($data->token)) {
                 throw new BaseException('Доступ запрещен.');
             }
 
@@ -141,9 +140,9 @@ class ArticleController
     public function actionDeleteArticle()
     {
         try {
-            $data = Site::getData(false);
+            $data = parent::getData(false);
 
-            if (!Site::checkAccess($data->token)) {
+            if (! parent::checkAccess($data->token)) {
                 throw new BaseException('Доступ запрещен.');
             }
 
@@ -175,7 +174,7 @@ class ArticleController
     public static function actionSearchArticles()
     {
         try {
-            $data = Site::getData(false);
+            $data = parent::getData(false);
 
             if (!isset($data->search)) {
                 throw new BaseException('Не заданы условия поиска.');

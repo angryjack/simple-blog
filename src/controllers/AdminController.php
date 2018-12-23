@@ -49,9 +49,9 @@ class AdminController extends Controller
      */
     public function actionIndex()
     {
-        $token = Site::getTokenFromCookie();
+        $token = parent::getTokenFromCookie();
 
-        if (!Site::checkAccess($token)) {
+        if (! parent::checkAccess($token)) {
             header('Location: /admin/login');
 
         } else {
@@ -67,9 +67,9 @@ class AdminController extends Controller
      */
     public function actionArticle()
     {
-        $token = Site::getTokenFromCookie();
+        $token = parent::getTokenFromCookie();
 
-        if (!Site::checkAccess($token)) {
+        if (! parent::checkAccess($token)) {
             header('Location: /admin/login');
 
         } else {
@@ -86,9 +86,9 @@ class AdminController extends Controller
      */
     public function actionCategory()
     {
-        $token = Site::getTokenFromCookie();
+        $token = parent::getTokenFromCookie();
 
-        if (!Site::checkAccess($token)) {
+        if (! parent::checkAccess($token)) {
             header('Location: /admin/login');
 
         } else {

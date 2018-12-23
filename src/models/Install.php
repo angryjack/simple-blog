@@ -7,16 +7,19 @@
 namespace Angryjack\models;
 
 use Angryjack\exceptions\InstallException;
+use Angryjack\helpers\Request;
 
 class Install
 {
+    use Request;
+
     private $installPath = __DIR__ . '/../includes/';
 
     private $data;
 
     public function __construct()
     {
-        $this->data = Site::getData();
+        $this->data = Request::getData();
     }
 
     /**

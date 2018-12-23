@@ -17,7 +17,7 @@ trait Token
      * @return string - возвращаем сгенерированный токен
      * @throws \Exception - ошибка при генерации токена
      */
-    private static function generateToken($login)
+    protected static function generateToken($login)
     {
         $token = md5(mt_rand());
 
