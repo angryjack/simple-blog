@@ -9,8 +9,9 @@ namespace Angryjack\models;
 use Angryjack\helpers\Link;
 use Angryjack\helpers\Request;
 use Angryjack\helpers\Token;
+use Angryjack\helpers\Validate;
 
 abstract class Model
 {
-    use Link, Request, Token;
+    use Link, Request, Token, Validate;
 }

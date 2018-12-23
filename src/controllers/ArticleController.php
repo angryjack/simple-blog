@@ -44,7 +44,7 @@ class ArticleController extends Controller
         }
 
         return array(
-            $this->instance->showAll($page)
+            $this->instance->getAll($page)
         );
     }
 
@@ -57,7 +57,7 @@ class ArticleController extends Controller
         $data = $this->data;
 
         return array(
-            $this->instance->show($data->id)
+            $this->instance->get($data->id)
         );
     }
 

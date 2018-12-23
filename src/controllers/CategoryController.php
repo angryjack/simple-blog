@@ -41,7 +41,7 @@ class CategoryController extends Controller
         }
 
         return array(
-            $this->instance->showAll($page)
+            $this->instance->getAll($page)
         );
     }
 
@@ -54,7 +54,7 @@ class CategoryController extends Controller
         $data = $this->data;
 
         return array(
-            $this->instance->show($data->id)
+            $this->instance->get($data->id)
         );
     }
 

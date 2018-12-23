@@ -17,11 +17,11 @@ return array(
     'admin/login' => 'admin/login',
     'admin/doLogin' => 'admin/doLogin',
 
-    'admin/article/getArticles' => 'article/getArticles',
-    'admin/article/getArticle' => 'article/getArticle',
-    'admin/article/addArticle' => 'article/addArticle',
-    'admin/article/editArticle' => 'article/editArticle',
-    'admin/article/deleteArticle' => 'article/deleteArticle',
+    'admin/article/getAll' => 'article/getArticles',
+    'admin/article/get' => 'article/getArticle',
+    'admin/article/create' => 'article/addArticle',
+    'admin/article/edit' => 'article/editArticle',
+    'admin/article/delete' => 'article/deleteArticle',
     'admin/article/search' => 'article/search',
     'admin/article' => 'admin/article',
 

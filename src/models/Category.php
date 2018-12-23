@@ -20,12 +20,12 @@ class Category extends Model implements Action
         $this->category = $category;
     }
 
-    public function showAll($page = 1): ?array
+    public function getAll($page = 1): ?array
     {
         // TODO: Implement showAll() method.
     }
 
-    public function show($id): ?array
+    public function get($id): ?array
     {
         // TODO: Implement show() method.
     }

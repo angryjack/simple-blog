@@ -13,14 +13,14 @@ interface Action
      * @param int $page - страница
      * @return array|null
      */
-    public function showAll($page = 1) :? array;
+    public function getAll($page = 1) :? array;
 
     /**
      * Показать конкретный элемент
      * @param $id
      * @return array|null
      */
-    public function show($id) :? array;
+    public function get($id) :? array;
 
     /**
      * Создать
