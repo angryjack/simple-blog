@@ -179,7 +179,7 @@ class Article extends Model implements Action
                 $sql = 'UPDATE articles SET link_id = :link_id WHERE id = :id';
                 $stmt = $db->prepare($sql);
                 $stmt->bindParam(':link_id', $linkId, PDO::PARAM_INT);
-                $stmt->bindParam(':id', $articleId, PDO::PARAM_INT);
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
             } elseif (empty($data->url)) {
                 $db = Db::getConnection();

@@ -51,6 +51,13 @@ trait Link
         return $db->lastInsertId();
     }
 
+    /**
+     * Обновление сслыки
+     * @param $url
+     * @param $id
+     * @return int
+     * @throws \Exception
+     */
     public static function updateLink($url, $id) : int
     {
         $db = Db::getConnection();
@@ -61,6 +68,12 @@ trait Link
         return $stmt->execute();
     }
 
+    /**
+     * Удаление сслыки
+     * @param $id
+     * @return bool
+     * @throws \Exception
+     */
     public static function deleteLink($id) : bool
     {
         $db = Db::getConnection();
