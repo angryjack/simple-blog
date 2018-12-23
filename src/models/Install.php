@@ -119,6 +119,7 @@ class Install
         if (!$stmt->execute()) {
             throw new InstallException('Ошибка создания пользователя.');
         }
+        return true;
     }
 
     /**
@@ -145,6 +146,6 @@ class Install
      */
     public function deleteInstallator()
     {
-        //
+        return false;
     }
 }

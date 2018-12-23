@@ -71,40 +71,35 @@ class Router
      */
     public function run()
     {
-        // Получаем строку запроса
         $uri = $this->getURI();
 
-        // Проверяем наличие такого запроса в массиве маршрутов (routes.php)
         foreach ($this->routes as $uriPattern => $path) {
-            // Сравниваем $uriPattern и $uri
-            if (preg_match("~$uriPattern~", $uri)) {
-                // Получаем внутренний путь из внешнего согласно правилу.
-                $internalRoute = preg_replace("~$uriPattern~", $path, $uri);
-
-                // Определить контроллер, action, параметры
-                $segments = explode('/', $internalRoute);
-
-                $controllerName = array_shift($segments) . 'Controller';
-                $controllerName = ucfirst($controllerName);
-
-                $actionName = 'action' . ucfirst(array_shift($segments));
-
-                $parameters = $segments;
-
-                $controllerName = 'Angryjack\controllers\\' . $controllerName;
-
-                // Создать объект, вызвать метод (т.е. action)
-                $controllerObject = new $controllerName;
-
-                /* Вызываем необходимый метод ($actionName) у определенного
-                 * класса ($controllerObject) с заданными ($parameters) параметрами
-                 */
-                $result = call_user_func_array(array($controllerObject, $actionName), $parameters);
-
-                if ($result != null) {
-                    break;
-                }
+            if (! preg_match("~$uriPattern~", $uri)) {
+                continue;
             }
+            $internalRoute = preg_replace("~$uriPattern~", $path, $uri);
+            $segments = explode('/', $internalRoute);
+            $controllerName = array_shift($segments) . 'Controller';
+            $controllerName = ucfirst($controllerName);
+            $actionName = 'action' . ucfirst(array_shift($segments));
+            $controllerName = 'Angryjack\controllers\\' . $controllerName;
+            $controllerObject = new $controllerName;
+
+            try {
+                $result = call_user_func_array(array($controllerObject, $actionName), $segments);
+            } catch (\Exception $e) {
+                $result = array(
+                    $e->getMessage()
+                );
+            }
+            if (empty($result)) {
+                continue;
+            } elseif (is_array($result)) {
+                echo json_decode($result);
+            } else {
+                die('ok!');
+            }
+            break;
         }
     }
 }

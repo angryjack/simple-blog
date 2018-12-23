@@ -126,12 +126,15 @@
                         db: this.db
                     }
                 }).then((response) => {
+
                     if (response.data.status === "success") {
                         install.step = 2;
                     } else {
                         this.result = response.data.message;
                     }
-                }).catch(function (error) {});
+                }).catch(function (error) {
+                    console.log(error);
+                });
             },
             createUser: function () {
                 this.result = '';

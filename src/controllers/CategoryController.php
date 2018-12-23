@@ -7,7 +7,6 @@
 
 namespace Angryjack\controllers;
 
-use Angryjack\exceptions\BaseException;
 use Angryjack\models\Category;
 
 /**
@@ -16,164 +15,98 @@ use Angryjack\models\Category;
  */
 class CategoryController extends Controller
 {
-    /**
-     * Получаем список категорий (клиентская часть)
-     * POST param - page ID
-     * @return bool
-     */
-    public function actionGetCategories()
+    protected $data;
+    protected $instance;
+
+    public function __construct()
     {
-        try {
-            $data = parent::getData(false);
-            if ($data->page) {
-                $page = intval($data->page);
-            } else {
-                $page = 1;
-            }
-
-            $categoryManager = new Category();
-            $categories = $categoryManager->getCategories($page);
-
-            $result['status'] = 'success';
-            $result['answer']['data'] = $categories;
-        } catch (BaseException $e) {
-            $result['status'] = 'error';
-            $result['answer']['text'] = $e->getMessage();
-        }
-
-        echo json_encode($result);
-        return true;
+        // получаем данные
+        $this->data = parent::getData();
+        // создаем объект
+        $this->instance = new Category();
     }
 
     /**
-     * Получаем конкретную категорию (клиентская часть)
-     * POST param - page ID
-     * @return bool
+     * Показать все
+     * @return array
      */
-    public function actionGetCategory()
+    public function actionShowAll() : array
     {
-        try {
-            $data = parent::getData();
+        $data = $this->data;
 
-            $categoryManager = new Category();
-            $category = $categoryManager->getCategory($data->id);
-
-            $result['status'] = 'success';
-            $result['answer']['data'] = $category;
-        } catch (BaseException $e) {
-            $result['status'] = 'error';
-            $result['answer']['text'] = $e->getMessage();
+        if (empty($data->page)) {
+            $page = 1;
+        } else {
+            $page = intval($data->page);
         }
 
-        echo json_encode($result);
-        return true;
+        return array(
+            $this->instance->showAll($page)
+        );
     }
 
     /**
-     * Метод добавления категории
-     * получаем параметры через POST
-     * @return bool
+     * Показать конкретную новость
+     * @return array
      */
-    public function actionAddCategory()
+    public function actionShow() : array
     {
-        try {
-            $data = parent::getData(false);
+        $data = $this->data;
 
-            if (! parent::checkAccess($data->token)) {
-                throw new BaseException('Доступ запрещен.');
-            }
-
-            $categoryManager = new Category($data);
-            $categoryManager->createCategory($data->token);
-
-            $result['status'] = 'success';
-            $result['answer']['text'] = 'Новость упешно создана.';
-            $result['answer']['code'] = 'CATEGORY_CREATE_SUCCESS';
-
-        } catch (BaseException $e) {
-            $result['status'] = 'error';
-            $result['answer']['text'] = $e->getMessage();
-        }
-
-        echo json_encode($result);
-        return true;
+        return array(
+            $this->instance->show($data->id)
+        );
     }
 
     /**
-     * Метод редактирования категории
+     * Создать
      * @return bool
      */
-    public function actionEditCategory()
+    public function actionCreate() : bool
     {
-        try {
-            $data = parent::getData();
+        $data = $this->data;
 
-            if (!parent::checkAccess($data->token)) {
-                throw new BaseException('Доступ запрещен.');
-            }
+        parent::checkAccess($data->token);
 
-            $categoryManager = new Category($data);
-            $categoryManager->editCategory($data->token, $data->id);
-
-            $result['status'] = 'success';
-            $result['answer']['text'] = 'Категория упешно отредактирована.';
-            $result['answer']['code'] = 'CATEGORY_EDIT_SUCCESS';
-        } catch (BaseException $e) {
-            $result['status'] = 'error';
-            $result['answer']['text'] = $e->getMessage();
-        }
-
-        echo json_encode($result);
-        return true;
+        return $this->instance->create($data);
     }
 
     /**
-     * Удаления категории
+     * Редактировать
      * @return bool
      */
-    public function actionDeleteCategory()
+    public function actionEdit() : bool
     {
-        try {
-            $data = parent::getData();
+        $data = $this->data;
 
-            if (!parent::checkAccess($data->token)) {
-                throw new BaseException('Доступ запрещен.');
-            }
+        parent::checkAccess($data->token);
 
-            $categoryManager = new Category();
-            $categoryManager->deleteCategory($data->token, $data->id);
-
-            $result['status'] = 'success';
-            $result['answer']['text'] = 'Категория упешно удалена.';
-            $result['answer']['code'] = 'CATEGORY_DELETE_SUCCESS';
-        } catch (BaseException $e) {
-            $result['status'] = 'error';
-            $result['answer']['text'] = $e->getMessage();
-        }
-        echo json_encode($result);
-        return true;
+        return $this->instance->edit($data->id, $data);
     }
 
     /**
-     * Поиск категории по заголовку
+     * Удалить
+     * @return bool
      */
-    public static function actionSearchCategories()
+    public function actionDelete() : bool
     {
-        try {
-            $data = parent::getData();
+        $data = $this->data;
 
-            $categoryManager = new Category();
-            $categories = $categoryManager->searchCategories($data->search);
+        parent::checkAccess($data->token);
 
-            $result['status'] = 'success';
-            $result['answer']['data'] = $categories;
+        return $this->instance->delete($data->id);
+    }
 
-        } catch (BaseException $e) {
-            $result['status'] = 'error';
-            $result['answer']['text'] = $e->getMessage();
-        }
+    /**
+     * Поиск по категориям
+     * @return array
+     */
+    public function actionSearch() : array
+    {
+        $data = $this->data;
 
-        echo json_encode($result);
-        return true;
+        return array(
+            $this->instance->search($data->search)
+        );
     }
 }

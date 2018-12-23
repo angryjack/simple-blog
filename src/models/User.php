@@ -7,7 +7,6 @@
 namespace Angryjack\models;
 
 use PDO;
-use Angryjack\helpers\Token;
 
 class User extends Model
 {

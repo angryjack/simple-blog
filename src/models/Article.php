@@ -14,13 +14,44 @@ use PDO;
 /**
  * Модель по работе с новостями на сайте
  */
-class Article extends Model
+class Article extends Model implements Action
 {
     public $article;
 
-    public function __construct($article = false)
+    public function __construct()
     {
-        $this->article = $article;
+        //
+    }
+
+    public function showAll($page = 1): ?array
+    {
+
+        // TODO: Implement showAll() method.
+    }
+
+    public function show($id): ?array
+    {
+        // TODO: Implement show() method.
+    }
+
+    public function create(array $data): bool
+    {
+        // TODO: Implement create() method.
+    }
+
+    public function edit($id, array $data): bool
+    {
+        // TODO: Implement edit() method.
+    }
+
+    public function delete($id): bool
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function search(array $data): ?array
+    {
+        // TODO: Implement search() method.
     }
 
     /**

@@ -11,13 +11,43 @@ use Angryjack\exceptions\BaseException;
 use Angryjack\helpers\Link;
 use PDO;
 
-class Category extends Model
+class Category extends Model implements Action
 {
     public $category;
 
     public function __construct($category = false)
     {
         $this->category = $category;
+    }
+
+    public function showAll($page = 1): ?array
+    {
+        // TODO: Implement showAll() method.
+    }
+
+    public function show($id): ?array
+    {
+        // TODO: Implement show() method.
+    }
+
+    public function create(array $data): bool
+    {
+        // TODO: Implement create() method.
+    }
+
+    public function edit($id, array $data): bool
+    {
+        // TODO: Implement edit() method.
+    }
+
+    public function delete($id): bool
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function search(array $data): ?array
+    {
+        // TODO: Implement search() method.
     }
 
     /**

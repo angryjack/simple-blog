@@ -7,7 +7,6 @@
 
 namespace Angryjack\controllers;
 
-use Angryjack\exceptions\BaseException;
 use Angryjack\models\Article;
 
 /**
@@ -16,181 +15,103 @@ use Angryjack\models\Article;
  */
 class ArticleController extends Controller
 {
+    protected $data;
+    protected $instance;
+
     /**
-     * Получения всех статей
-     * @return bool
+     * ArticleController constructor.
      */
-    public function actionGetArticles()
+    public function __construct()
     {
-        try {
-            $data = parent::getData();
-            if ($data->page) {
-                $page = intval($data->page);
-            } else {
-                $page = 1;
-            }
-            $articleManager = new Article();
-            $articles = $articleManager->getArticles(false, $page);
-
-            $result['status'] = 'success';
-            $result['answer']['data'] = $articles;
-        } catch (BaseException $e) {
-            $result['status'] = 'error';
-            $result['answer']['text'] = $e->getMessage();
-        }
-
-        echo json_encode($result);
-        return true;
+        // получаем данные
+        $this->data = parent::getData();
+        // создаем объект статьи
+        $this->instance = new Article();
     }
 
     /**
-     * Получаем конкретную новость (клиентская часть)
-     * POST param - page ID
-     * @return bool
+     * Показать все
+     * @return array
      */
-    public function actionGetArticle()
+    public function actionShowAll() : array
     {
-        try {
-            $data = parent::getData();
-            $articleManager = new Article($data);
-            $article = $articleManager->getArticle($data->id);
+        $data = $this->data;
 
-            $result['status'] = 'success';
-            $result['answer']['data'] = $article;
-
-        } catch (BaseException $e) {
-            $result['status'] = 'error';
-            $result['answer']['text'] = $e->getMessage();
+        if (empty($data->page)) {
+            $page = 1;
+        } else {
+            $page = intval($data->page);
         }
 
-        echo json_encode($result);
-        return true;
+        return array(
+            $this->instance->showAll($page)
+        );
     }
 
     /**
-     * Добавления новости
-     * получаем параметры через POST
-     * @return bool
-     * @throws
+     * Показать конкретную
+     * @return array
      */
-    public function actionAddArticle()
+    public function actionShow() : array
     {
-        try {
-            $data = parent::getData();
+        $data = $this->data;
 
-            if (! parent::checkAccess($data->token)) {
-                throw new BaseException('Доступ запрещен.');
-            }
-
-            $articleManager = new Article($data);
-            $articleManager->createArticle($data->token);
-
-            $result['status'] = 'success';
-            $result['answer']['text'] = 'Новость упешно создана.';
-            $result['answer']['code'] = 'ARTICLE_CREATE_SUCCESS';
-
-        } catch (BaseException $e) {
-            $result['status'] = 'error';
-            $result['answer']['text'] = $e->getMessage();
-        }
-
-        echo json_encode($result);
-        return true;
+        return array(
+            $this->instance->show($data->id)
+        );
     }
 
     /**
-     * Редактирование новости
+     * Создать статью
      * @return bool
-     * @throws BaseException
      */
-    public function actionEditArticle()
+    public function actionCreate() : bool
     {
-        try {
-            $data = parent::getData(false);
+        $data = $this->data;
 
-            if (! parent::checkAccess($data->token)) {
-                throw new BaseException('Доступ запрещен.');
-            }
+        parent::checkAccess($data->token);
 
-            if (!isset($data->id)) {
-                throw new BaseException('Не указан id статьи.');
-            }
-
-            $articleManager = new Article($data);
-            $articleManager->editArticle($data->token, $data->id);
-
-            $result['status'] = 'success';
-            $result['answer']['text'] = 'Новость упешно отредактирована.';
-            $result['answer']['code'] = 'ARTICLE_EDIT_SUCCESS';
-
-        } catch (BaseException $e) {
-            $result['status'] = 'error';
-            $result['answer']['text'] = $e->getMessage();
-        }
-
-        echo json_encode($result);
-        return true;
+        return $this->instance->create($data);
     }
 
     /**
-     * Удаление статьи
+     * Редактировать статью
      * @return bool
-     * @throws BaseException
      */
-    public function actionDeleteArticle()
+    public function actionEdit() : bool
     {
-        try {
-            $data = parent::getData(false);
+        $data = $this->data;
 
-            if (! parent::checkAccess($data->token)) {
-                throw new BaseException('Доступ запрещен.');
-            }
+        parent::checkAccess($data->token);
 
-            if (!isset($data->id)) {
-                throw new BaseException('Не указан id статьи.');
-            }
-
-            $articleManager = new Article();
-            $articleManager->deleteArticle($data->token, $data->id);
-
-            $result['status'] = 'success';
-            $result['answer']['text'] = 'Новость упешно удалена.';
-            $result['answer']['code'] = 'ARTICLE_DELETE_SUCCESS';
-
-        } catch (BaseException $e) {
-            $result['status'] = 'error';
-            $result['answer']['text'] = $e->getMessage();
-        }
-
-        echo json_encode($result);
-        return true;
+        return $this->instance->edit($data->id, $data);
     }
 
     /**
-     * Поиск статей по их заголовку
+     * Удалить статью
      * @return bool
-     * @throws BaseException
      */
-    public static function actionSearchArticles()
+    public function actionDelete() : bool
     {
-        try {
-            $data = parent::getData(false);
+        $data = $this->data;
 
-            if (!isset($data->search)) {
-                throw new BaseException('Не заданы условия поиска.');
-            }
-            $articleManager = new Article();
-            $articles = $articleManager->search($data->search);
+        parent::checkAccess($data->token);
 
-            $result['status'] = 'success';
-            $result['answer']['data'] = $articles;
+        return $this->instance->delete($data->id);
+    }
 
-        } catch (BaseException $e) {
-            $result['status'] = 'error';
-            $result['answer']['text'] = $e->getMessage();
-        }
+    /**
+     * Поиск по статьям
+     * @return array
+     */
+    public function actionSearch() : array
+    {
+        $data = $this->data;
 
-        echo json_encode($result);
-        return true;
+        $articles = $this->instance->search($data->search);
+
+        return array(
+            $articles
+        );
     }
 }

@@ -10,7 +10,7 @@ use Angryjack\helpers\Link;
 use Angryjack\helpers\Request;
 use Angryjack\helpers\Token;
 
-class Model
+abstract class Model
 {
     use Link, Request, Token;
 }

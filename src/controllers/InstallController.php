@@ -9,15 +9,22 @@ namespace Angryjack\controllers;
 use Angryjack\models\Db;
 use Angryjack\models\Install;
 
-class InstallController
+class InstallController extends Controller
 {
+    /**
+     * @var Install instance of Installer
+     */
+    protected $instance;
 
     /**
      * InstallController constructor.
      */
     public function __construct()
     {
-        //todo сделать проверку на установщик
+        if (empty($this->instance)) {
+            $this->instance = new Install();
+        }
+        return $this->instance;
     }
 
     /**
@@ -26,126 +33,66 @@ class InstallController
      */
     public function actionIndex()
     {
-        require_once(__DIR__ . '/../views/install/index.php');
-        return true;
+        return $this->view('install.index');
     }
 
     /**
      * Проверяем подключение к базе данных
+     * @return bool
+     * @throws \Exception
      */
-    public function actionCheckDb()
+    public function actionCheckDb() : bool
     {
-        try {
-            Db::getConnection();
-            $result['status'] = 'success';
-            $result['message'] = "Подключение успешно установлено!";
-        } catch (\Exception $e) {
-            $result['status'] = 'error';
-            $result['message'] = $e->getMessage();
-        }
-        echo json_encode($result);
-        return true;
+        return (Db::getConnection()) ? true : false;
     }
-
 
     /**
      * Выполняем установку сайта
      * @throws \Exception
      */
-    public function actionInit()
+    public function actionInit() : bool
     {
-        try {
-            // проверяем подлючение к базе данных
-            $this->actionCheckDb();
+        $this->actionCheckDb();
 
-            // запускаем установщик
-            $installer = new Install();
+        $this->instance->createConfig();
+        $this->instance->importDataToDb();
 
-            // прописываем данные от бд в конфиг
-            $installer->createConfig();
-
-            //делаем импорт в базу данных
-            $installer->importDataToDb();
-            $result['status'] = 'success';
-        } catch (\Exception $e) {
-            $result['status'] = 'error';
-            $result['message'] = $e->getMessage();
-        }
-        echo json_encode($result);
         return true;
     }
-
 
     /**
      * Создаем пользователя
      * @throws \Exception
      */
-    public function actionCreateUser()
+    public function actionCreateUser() : bool
     {
-        try {
-            $installer = new Install();
-            $installer->createUser();
-            $result['status'] = 'success';
-        } catch (\Exception $e) {
-            $result['status'] = 'error';
-            $result['message'] = $e->getMessage();
-        }
-        echo json_encode($result);
-        return true;
+        return $this->instance->createUser();
     }
 
     /**
      * Отменяем установку
      * @throws \Exception
      */
-    public function actionUndoInstall()
+    public function actionUndoInstall() : bool
     {
-        try {
-            $installer = new Install();
-            $installer->deleteDbConfigFile();
-            $result['status'] = 'success';
-        } catch (\Exception $e) {
-            $result['status'] = 'error';
-            $result['message'] = $e->getMessage();
-        }
-        echo json_encode($result);
-        return true;
+        return $this->instance->deleteDbConfigFile();
     }
 
     /**
      * Удаляем установщик после успешной установки
      * @throws \Exception
      */
-    public function actionDeleteInstaller()
+    public function actionDeleteInstaller() : bool
     {
-        try {
-            $installer = new Install();
-            $installer->deleteInstallator();
-            $result['status'] = 'success';
-        } catch (\Exception $e) {
-            $result['status'] = 'error';
-            $result['message'] = $e->getMessage();
-        }
-        echo json_encode($result);
-        return true;
+        return $this->instance->deleteInstallator();
     }
 
     /**
      * Удаляем таблицы из базы данных
      * @throws \Exception
      */
-    public function actionClearDb()
+    public function actionClearDb() : bool
     {
-        try {
-            $installer = new Install();
-            $installer->clearDb();
-            $result['status'] = 'success';
-            $result['message'] = 'База данных успешно очищена!';
-        } catch (\Exception $e) {
-            $result['status'] = 'error';
-            $result['message'] = $e->getMessage();
-        }
-        echo json_encode($result);
-        return true;
+        return $this->instance->clearDb();
     }
 }
