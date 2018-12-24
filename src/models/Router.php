@@ -7,63 +7,34 @@
 
 namespace Angryjack\models;
 
-use PDO;
+use Angryjack\controllers\Controller;
+use Angryjack\exceptions\BaseException;
 
 class Router
 {
+    /**
+     * @var array
+     */
     private $routes;
 
     /**
-     * Конструктор
+     * @var string
+     */
+    private $url;
+
+    /**
+     * Router constructor.
      */
     public function __construct()
     {
         // Путь к файлу с роутами
-        $routesPath = ROOT . '/src/includes/routes.php';
+        $this->routes = include(__DIR__ . '/../includes/routes.php');
 
-        //получаем строку запроса
-        $uri = $this->getURI();
+        // Строка запроса
+        $this->url = trim($_SERVER['REQUEST_URI'], '/');
 
-        // назвачаем флаг если строка запроса начинается с install
-        $flag = preg_match('/^install/', $uri);
-
-        // если запрос не на установку и нет параметров у базы данных, то считаем что сайт не установлен
-        if (! $flag && ! file_exists('../src/includes/db_params.php')) {
-            header('Location: /install');
-            exit('Cайт не установлен. Вы будете перенаправлены на страницу установки.');
-        }
-        //todo подумать над тем, что на установленном сайте можно перейти к установщику
-        if ($flag) {
-            $this->routes = include($routesPath);
-        } else {
-            $this->routes = array_merge($this->getRoutesFromDB(), include($routesPath));
-        }
-    }
-
-    /**
-     * Возвращает строку запроса
-     */
-    private function getURI()
-    {
-        if (! empty($_SERVER['REQUEST_URI'])) {
-            return trim($_SERVER['REQUEST_URI'], '/');
-        }
-        return false;
-    }
-
-    public function getRoutesFromDB()
-    {
-        $db = Db::getConnection();
-        $stmt = $db->query('SELECT url, internal_route FROM routes');
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $routes = $stmt->fetchAll();
-
-        $dbRoutes = [];
-        foreach ($routes as $route) {
-            $dbRoutes[$route['url']] = $route['internal_route'];
-        }
-
-        return $dbRoutes;
+        //todo проверить на установку
+        //todo добавить роуты из БД
     }
 
     /**
@@ -71,35 +42,52 @@ class Router
      */
     public function run()
     {
-        $uri = $this->getURI();
+        try {
+            $result = $this->invokeController();
 
+            if (is_array($result)) {
+                echo json_encode($result);
+            } elseif ($result instanceof Controller) {
+                exit;
+            } elseif ($result === true) {
+                echo json_encode('success.');
+            } else {
+                echo json_encode('error.');
+            }
+            exit;
+        } catch (BaseException $e){
+            echo json_encode($e->getMessage());
+        } catch (\Exception $e) {
+            file_put_contents('errors.txt', $e->getMessage() . PHP_EOL);
+            header('HTTP/1.1 503 Service Temporarily Unavailable');
+            header('Status: 503 Service Temporarily Unavailable');
+            header('Retry-After: 300');
+            include __DIR__ . '/../views/site/error.php';
+            die;
+        }
+    }
+
+    /**
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function invokeController()
+    {
         foreach ($this->routes as $uriPattern => $path) {
-            if (! preg_match("~$uriPattern~", $uri)) {
+            if (! preg_match("~$uriPattern~", $this->url)) {
                 continue;
             }
-            $internalRoute = preg_replace("~$uriPattern~", $path, $uri);
-            $segments = explode('/', $internalRoute);
-            $controllerName = array_shift($segments) . 'Controller';
-            $controllerName = ucfirst($controllerName);
-            $actionName = 'action' . ucfirst(array_shift($segments));
+            $controllerName = ucfirst(array_shift($segments) . 'Controller');
             $controllerName = 'Angryjack\controllers\\' . $controllerName;
             $controllerObject = new $controllerName;
 
-            try {
-                $result = call_user_func_array(array($controllerObject, $actionName), $segments);
-            } catch (\Exception $e) {
-                $result = array(
-                    $e->getMessage()
-                );
-            }
-            if (empty($result)) {
-                continue;
-            } elseif (is_array($result)) {
-                echo json_decode($result);
-            } else {
-                die('ok!');
-            }
-            break;
+            $actionName = 'action' . ucfirst(array_shift($segments));
+
+            $internalRoute = preg_replace("~$uriPattern~", $path, $this->url);
+            $segments = explode('/', $internalRoute);
+
+            return call_user_func_array(array($controllerObject, $actionName), $segments);
         }
+        throw new \Exception('Запрошенной страницы не существует.');
     }
 }

@@ -6,7 +6,7 @@
 
 namespace Angryjack\exceptions;
 
-class UserException extends \Exception
+class UserException extends BaseException
 {
 
 }

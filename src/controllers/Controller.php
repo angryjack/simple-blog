@@ -13,8 +13,15 @@ abstract class Controller
 {
     use Token, Request;
 
+    /**
+     * Подключаем необходимый шаблон
+     * @return $this
+     */
     public function view($template, array $data = [])
     {
-        return true;
+        $path = implode('/', explode('.', $template));
+        require_once(__DIR__ . '/../views/' . $path . '.php');
+
+        return $this;
     }
 }

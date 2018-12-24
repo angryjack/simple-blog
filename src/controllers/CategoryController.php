@@ -21,7 +21,7 @@ class CategoryController extends Controller
     public function __construct()
     {
         // получаем данные
-        $this->data = parent::getData();
+        $this->data = $this->getData();
         // создаем объект
         $this->instance = new Category();
     }
@@ -66,7 +66,7 @@ class CategoryController extends Controller
     {
         $data = $this->data;
 
-        parent::checkAccess($data->token);
+        $this->checkAccess($data->token);
 
         return $this->instance->create($data);
     }
