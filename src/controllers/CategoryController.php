@@ -29,6 +29,7 @@ class CategoryController extends Controller
     /**
      * Показать все
      * @return array
+     * @throws \Exception
      */
     public function actionShowAll() : array
     {
@@ -48,6 +49,7 @@ class CategoryController extends Controller
     /**
      * Показать конкретную новость
      * @return array
+     * @throws \Exception
      */
     public function actionShow() : array
     {
@@ -61,6 +63,7 @@ class CategoryController extends Controller
     /**
      * Создать
      * @return bool
+     * @throws \Angryjack\exceptions\BaseException
      */
     public function actionCreate() : bool
     {
@@ -74,6 +77,7 @@ class CategoryController extends Controller
     /**
      * Редактировать
      * @return bool
+     * @throws \Angryjack\exceptions\BaseException
      */
     public function actionEdit() : bool
     {
@@ -87,6 +91,7 @@ class CategoryController extends Controller
     /**
      * Удалить
      * @return bool
+     * @throws \Exception
      */
     public function actionDelete() : bool
     {
@@ -100,6 +105,7 @@ class CategoryController extends Controller
     /**
      * Поиск по категориям
      * @return array
+     * @throws \Exception
      */
     public function actionSearch() : array
     {

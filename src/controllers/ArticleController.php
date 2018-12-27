@@ -32,6 +32,7 @@ class ArticleController extends Controller
     /**
      * Показать все
      * @return array
+     * @throws \Exception
      */
     public function actionShowAll() : array
     {
@@ -51,6 +52,7 @@ class ArticleController extends Controller
     /**
      * Показать конкретную
      * @return array
+     * @throws \Exception
      */
     public function actionShow() : array
     {
@@ -64,6 +66,7 @@ class ArticleController extends Controller
     /**
      * Создать статью
      * @return bool
+     * @throws \Angryjack\exceptions\BaseException
      */
     public function actionCreate() : bool
     {
@@ -77,6 +80,7 @@ class ArticleController extends Controller
     /**
      * Редактировать статью
      * @return bool
+     * @throws \Angryjack\exceptions\BaseException
      */
     public function actionEdit() : bool
     {
@@ -90,6 +94,7 @@ class ArticleController extends Controller
     /**
      * Удалить статью
      * @return bool
+     * @throws \Exception
      */
     public function actionDelete() : bool
     {
@@ -103,6 +108,7 @@ class ArticleController extends Controller
     /**
      * Поиск по статьям
      * @return array
+     * @throws \Exception
      */
     public function actionSearch() : array
     {
