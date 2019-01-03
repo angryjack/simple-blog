@@ -31,10 +31,9 @@ class ArticleController extends Controller
 
     /**
      * Показать все
-     * @return array
      * @throws \Exception
      */
-    public function actionShowAll() : array
+    public function index() : object
     {
         $data = $this->data;
 
@@ -44,23 +43,24 @@ class ArticleController extends Controller
             $page = intval($data->page);
         }
 
-        return array(
-            $this->instance->getAll($page)
-        );
+        $data = $this->instance->getAll($page);
+
+        return $this->view('site.articles', $data);
     }
 
     /**
      * Показать конкретную
-     * @return array
+     * @param $id
+     * @return object
      * @throws \Exception
      */
-    public function actionShow() : array
+    public function show($id) : object
     {
-        $data = $this->data;
-
-        return array(
-            $this->instance->get($data->id)
+        $data = array(
+            $this->instance->get($id)
         );
+
+        return $this->view('site.article', $data);
     }
 
     /**
@@ -68,7 +68,7 @@ class ArticleController extends Controller
      * @return bool
      * @throws \Angryjack\exceptions\BaseException
      */
-    public function actionCreate() : bool
+    public function store() : bool
     {
         $data = $this->data;
 
@@ -82,7 +82,7 @@ class ArticleController extends Controller
      * @return bool
      * @throws \Angryjack\exceptions\BaseException
      */
-    public function actionEdit() : bool
+    public function update($id) : bool
     {
         $data = $this->data;
 
@@ -96,7 +96,7 @@ class ArticleController extends Controller
      * @return bool
      * @throws \Exception
      */
-    public function actionDelete() : bool
+    public function destroy() : bool
     {
         $data = $this->data;
 
@@ -110,7 +110,7 @@ class ArticleController extends Controller
      * @return array
      * @throws \Exception
      */
-    public function actionSearch() : array
+    public function search() : array
     {
         $data = $this->data;
 

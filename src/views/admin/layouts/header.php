@@ -11,9 +11,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="/web/css/admin.css">
-    <link rel="stylesheet" href="/web/css/main.css">
+    <link rel="stylesheet" href="/public/css/admin.css">
+    <link rel="stylesheet" href="/public/css/main.css">
     <title>Admin panel</title>
-    <script src="/web/js/build.js"></script>
+    <script src="/public/js/build.js"></script>
 </head>
 <body>

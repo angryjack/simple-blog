@@ -14,7 +14,7 @@ class AdminController extends Controller
     /**
      * Форма входа в админ панель
      */
-    public function actionLogin()
+    public function login()
     {
         return $this->view('admin.login');
     }
@@ -23,7 +23,7 @@ class AdminController extends Controller
      * Метод входа в админ панель
      * throws \Exception - критические ошибки, даем на откуп нашему глобальному обработчику ошибок
      */
-    public function actionDoLogin()
+    public function doLogin()
     {
         $data = parent::getData(false);
         $token = (new User)->login($data->login, $data->password);
@@ -34,14 +34,11 @@ class AdminController extends Controller
     /**
      * Главная страница админ панели
     */
-    public function actionIndex()
+    public function index()
     {
         $token = parent::getTokenFromCookie();
 
-        if (! parent::checkAccess($token)) {
-            header('Location: /admin/login');
-            exit;
-        }
+        parent::checkAccess($token);
 
         return $this->view('admin.index');
     }
@@ -49,14 +46,12 @@ class AdminController extends Controller
     /**
      * Страница управления статьями
      */
-    public function actionArticle()
+    public function article()
     {
+        //todo назвать метод manageArticles
         $token = parent::getTokenFromCookie();
 
-        if (! parent::checkAccess($token)) {
-            header('Location: /admin/login');
-            exit;
-        }
+        parent::checkAccess($token);
 
         return $this->view('admin.article.article');
     }
@@ -64,14 +59,11 @@ class AdminController extends Controller
     /**
      * Страница управления категориями
      */
-    public function actionCategory()
+    public function category()
     {
         $token = parent::getTokenFromCookie();
 
-        if (! parent::checkAccess($token)) {
-            header('Location: /admin/login');
-            exit;
-        }
+        parent::checkAccess($token);
 
         return $this->view('admin.category.category');
     }

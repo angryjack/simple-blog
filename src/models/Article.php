@@ -64,7 +64,7 @@ class Article extends Model implements Action
      * @return array|null
      * @throws \Exception
      */
-    public function get($id): ?array
+    public function get($id): ?object
     {
         $db = Db::getConnection();
         $sql = 'SELECT articles.id AS "id",

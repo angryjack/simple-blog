@@ -31,7 +31,7 @@ class InstallController extends Controller
      * Форма установки сайта
      * @throws \Exception
      */
-    public function actionIndex()
+    public function index()
     {
         return $this->view('install.index');
     }
@@ -41,7 +41,7 @@ class InstallController extends Controller
      * @return bool
      * @throws \Exception
      */
-    public function actionCheckDb() : bool
+    public function checkDb() : bool
     {
         return (Db::getConnection()) ? true : false;
     }
@@ -50,9 +50,9 @@ class InstallController extends Controller
      * Выполняем установку сайта
      * @throws \Exception
      */
-    public function actionInit() : bool
+    public function init() : bool
     {
-        $this->actionCheckDb();
+        $this->checkDb();
 
         $this->instance->createConfig();
         $this->instance->importDataToDb();
@@ -64,7 +64,7 @@ class InstallController extends Controller
      * Создаем пользователя
      * @throws \Exception
      */
-    public function actionCreateUser() : bool
+    public function createUser() : bool
     {
         return $this->instance->createUser();
     }
@@ -73,7 +73,7 @@ class InstallController extends Controller
      * Отменяем установку
      * @throws \Exception
      */
-    public function actionUndoInstall() : bool
+    public function undoInstall() : bool
     {
         return $this->instance->deleteDbConfigFile();
     }
@@ -82,7 +82,7 @@ class InstallController extends Controller
      * Удаляем установщик после успешной установки
      * @throws \Exception
      */
-    public function actionDeleteInstaller() : bool
+    public function deleteInstaller() : bool
     {
         return $this->instance->deleteInstallator();
     }
@@ -91,7 +91,7 @@ class InstallController extends Controller
      * Удаляем таблицы из базы данных
      * @throws \Exception
      */
-    public function actionClearDb() : bool
+    public function clearDb() : bool
     {
         return $this->instance->clearDb();
     }

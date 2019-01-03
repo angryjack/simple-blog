@@ -55,7 +55,8 @@ trait Token
                 return true;
             }
         }
-        return false;
+        header('Location: /admin/login');
+        die('Access denied.');
     }
 
     /**

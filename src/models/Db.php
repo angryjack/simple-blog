@@ -22,21 +22,6 @@ class Db
     protected static $instance;
     private static $params;
 
-    private function __construct()
-    {
-        //
-    }
-
-    private function __clone()
-    {
-        //
-    }
-
-    private function __wakeup()
-    {
-        //
-    }
-
     /**
      * Возвращаем экземпляр PDO
      * @return PDO
@@ -74,19 +59,22 @@ class Db
      */
     protected static function getParams()
     {
-        $paramsPath = '../includes/db_params.php';
+        $paramsPath = __DIR__ . '/../includes/db_params.php';
+        self::$params = include($paramsPath);
+    }
 
-        if (! file_exists($paramsPath)) {
-            $db = Request::getData()->db;
+    private function __construct()
+    {
+        //
+    }
 
-            self::$params = array(
-                'host' => $db->host,
-                'user' => $db->user,
-                'password' => $db->password,
-                'name' => $db->name,
-            );
-        } else {
-            self::$params = include($paramsPath);
-        }
+    private function __clone()
+    {
+        //
+    }
+
+    private function __wakeup()
+    {
+        //
     }
 }

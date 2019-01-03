@@ -20,7 +20,7 @@ interface Action
      * @param $id
      * @return array|null
      */
-    public function get($id) :? array;
+    public function get($id) :? object;
 
     /**
      * Создать

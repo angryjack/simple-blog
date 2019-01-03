@@ -32,9 +32,6 @@ class Router
 
         // Строка запроса
         $this->url = trim($_SERVER['REQUEST_URI'], '/');
-
-        //todo проверить на установку
-        //todo добавить роуты из БД
     }
 
     /**
@@ -48,17 +45,18 @@ class Router
             if (is_array($result)) {
                 echo json_encode($result);
             } elseif ($result instanceof Controller) {
-                exit;
+                // nothing yet
             } elseif ($result === true) {
                 echo json_encode('success.');
             } else {
                 echo json_encode('error.');
             }
-            exit;
-        } catch (BaseException $e){
+        } catch (BaseException $e) {
             echo json_encode($e->getMessage());
         } catch (\Exception $e) {
-            file_put_contents('errors.txt', $e->getMessage() . PHP_EOL);
+            die('error here!');
+
+            file_put_contents(__DIR__ . '/../../errors.txt', $e->getMessage() . PHP_EOL);
             header('HTTP/1.1 503 Service Temporarily Unavailable');
             header('Status: 503 Service Temporarily Unavailable');
             header('Retry-After: 300');
@@ -77,17 +75,16 @@ class Router
             if (! preg_match("~$uriPattern~", $this->url)) {
                 continue;
             }
-            $controllerName = ucfirst(array_shift($segments) . 'Controller');
-            $controllerName = 'Angryjack\controllers\\' . $controllerName;
-            $controllerObject = new $controllerName;
-
-            $actionName = 'action' . ucfirst(array_shift($segments));
-
             $internalRoute = preg_replace("~$uriPattern~", $path, $this->url);
             $segments = explode('/', $internalRoute);
 
-            return call_user_func_array(array($controllerObject, $actionName), $segments);
+            $controllerName = 'Angryjack\controllers\\' . ucfirst(array_shift($segments) . 'Controller');
+            $controller = new $controllerName;
+            $method = array_shift($segments);
+            $params = $segments;
+
+            return call_user_func_array(array($controller, $method), $params);
         }
-        throw new \Exception('Запрошенной страницы не существует.');
+        throw new BaseException('Запрошенной страницы не существует.');
     }
 }

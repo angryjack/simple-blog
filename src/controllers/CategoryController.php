@@ -31,7 +31,7 @@ class CategoryController extends Controller
      * @return array
      * @throws \Exception
      */
-    public function actionShowAll() : array
+    public function showAll() : array
     {
         $data = $this->data;
 
@@ -51,7 +51,7 @@ class CategoryController extends Controller
      * @return array
      * @throws \Exception
      */
-    public function actionShow() : array
+    public function show() : array
     {
         $data = $this->data;
 
@@ -65,7 +65,7 @@ class CategoryController extends Controller
      * @return bool
      * @throws \Angryjack\exceptions\BaseException
      */
-    public function actionCreate() : bool
+    public function create() : bool
     {
         $data = $this->data;
 
@@ -79,7 +79,7 @@ class CategoryController extends Controller
      * @return bool
      * @throws \Angryjack\exceptions\BaseException
      */
-    public function actionEdit() : bool
+    public function edit() : bool
     {
         $data = $this->data;
 
@@ -93,7 +93,7 @@ class CategoryController extends Controller
      * @return bool
      * @throws \Exception
      */
-    public function actionDelete() : bool
+    public function delete() : bool
     {
         $data = $this->data;
 
@@ -107,7 +107,7 @@ class CategoryController extends Controller
      * @return array
      * @throws \Exception
      */
-    public function actionSearch() : array
+    public function search() : array
     {
         $data = $this->data;
 
