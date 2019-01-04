@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS `articles`, `categories`, `routes`, `users`;
+DROP TABLE IF EXISTS `articles`, `routes`, `users`;

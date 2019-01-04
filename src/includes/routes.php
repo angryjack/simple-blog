@@ -15,14 +15,6 @@ return array(
     'article/destroy/([0-9]+)' => 'article/destroy/$1',
     'article/search' => 'article/search',
 
-    /* Categories */
-    'categories' => 'category/index',
-    'category/([0-9]+)' => 'category/show/$1',
-    'category/store' => 'category/store',
-    'category/update/([0-9]+)' => 'category/update/$1',
-    'category/destroy/([0-9]+)' => 'category/destroy/$1',
-    'category/search' => 'category/search',
-
     /* Admin panel */
     'admin/articles' => 'admin/articles',
     'admin/categories' => 'admin/categories',

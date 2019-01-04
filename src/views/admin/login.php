@@ -5,7 +5,6 @@
  * Date: 23.06.2018 21:38
  */
 ?>
-<?php include(ROOT . "/src/views/admin/layouts/header.php"); ?>
 
 <div class="container align-self-center d-flex justify-content-center mt-4">
     <div class="card" style="width: 25rem" id="admin-login">
@@ -63,5 +62,3 @@
         }
     })
 </script>
-
-<?php include(ROOT . "/src/views/admin/layouts/footer.php"); ?>
