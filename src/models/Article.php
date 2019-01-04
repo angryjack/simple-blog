@@ -28,7 +28,7 @@ class Article extends Model implements Action
      * @return array|null
      * @throws \Exception
      */
-    public function getAll($page = 1): ?array
+    public function showAll($page = 1): ?array
     {
         $page = intval($page);
         $limit = 20;
@@ -64,7 +64,7 @@ class Article extends Model implements Action
      * @return array|null
      * @throws \Exception
      */
-    public function get($id): ?object
+    public function show($id): ?object
     {
         $db = Db::getConnection();
         $sql = 'SELECT articles.id AS "id",
@@ -94,7 +94,7 @@ class Article extends Model implements Action
      * @return bool
      * @throws BaseException
      */
-    public function create(array $data): bool
+    public function store(array $data): bool
     {
         parent::makeValidation([
             $data->title => 'str',
@@ -136,7 +136,7 @@ class Article extends Model implements Action
      * @return bool
      * @throws BaseException
      */
-    public function edit($id, array $data): bool
+    public function update($id, array $data): bool
     {
         parent::makeValidation([
             $data->title => 'str',
@@ -206,7 +206,7 @@ class Article extends Model implements Action
      * @return bool
      * @throws \Exception
      */
-    public function delete($id): bool
+    public function destroy($id): bool
     {
         $article = $this->get($id);
 
