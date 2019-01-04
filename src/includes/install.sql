@@ -3,8 +3,7 @@ CREATE TABLE `articles` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(512) DEFAULT NULL,
   `content` text,
-  `link_id` varchar(512) DEFAULT NULL,
-  `category` int(11) DEFAULT NULL,
+  `category_id` int(11) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
   `keywords` varchar(1024) DEFAULT NULL,
   `create_date` int(11) DEFAULT NULL,
@@ -18,7 +17,6 @@ CREATE TABLE `categories` (
   `content` text,
   `description` text,
   `keywords` text,
-  `link_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

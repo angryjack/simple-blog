@@ -16,7 +16,7 @@ class AdminController extends Controller
      */
     public function login()
     {
-        return $this->view('admin.login');
+        return $this->adminView('admin.login');
     }
 
     /**
@@ -40,7 +40,7 @@ class AdminController extends Controller
 
         parent::checkAccess($token);
 
-        return $this->view('admin.index');
+        return $this->adminView('admin.index');
     }
 
     /**
@@ -53,7 +53,7 @@ class AdminController extends Controller
 
         parent::checkAccess($token);
 
-        return $this->view('admin.article.article');
+        return $this->adminView('admin.article.article');
     }
 
     /**
@@ -65,6 +65,6 @@ class AdminController extends Controller
 
         parent::checkAccess($token);
 
-        return $this->view('admin.category.category');
+        return $this->adminView('admin.category.category');
     }
 }
