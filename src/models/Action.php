@@ -27,7 +27,7 @@ interface Action
      * @param array $data
      * @return bool
      */
-    public function store(array $data) : bool;
+    public function store(object $data) : bool;
 
     /**
      * Отредактировать
@@ -35,7 +35,7 @@ interface Action
      * @param array $data
      * @return bool
      */
-    public function update($id, array $data) : bool;
+    public function update($id, object $data) : bool;
 
     /**
      * Удалить
@@ -49,5 +49,5 @@ interface Action
      * @param array $data
      * @return array|null
      */
-    public function search(array $data) :? array;
+    public function search(object $data) :? array;
 }

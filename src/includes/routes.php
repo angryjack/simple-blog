@@ -8,6 +8,7 @@
 return array(
 
     /* Articles */
+    'articles/listing' => 'article/listing',
     'articles' => 'article/index',
     'article/([0-9]+)' => 'article/show/$1',
     'article/store' => 'article/store',

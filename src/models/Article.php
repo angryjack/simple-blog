@@ -38,14 +38,8 @@ class Article extends Model implements Action
 
         $sql = 'SELECT articles.id AS "id",
                        articles.title AS "title",
-                       articles.content AS "content",                       
-                       categories.title AS "category",
-                       categories.id AS "category_id",                
-                       (SELECT url FROM routes WHERE routes.id = categories.link_id) AS "category_link",
-                       routes.url AS "url"
+                       articles.content AS "content"                       
                 FROM articles
-                LEFT JOIN categories ON articles.category = categories.id
-                LEFT JOIN routes ON articles.link_id = routes.id
                 ORDER BY id DESC
                 LIMIT :limit OFFSET :offset';
         $stmt = $db->prepare($sql);
@@ -90,43 +84,25 @@ class Article extends Model implements Action
 
     /**
      * Создаем статью
-     * @param array $data
+     * @param object $data
      * @return bool
-     * @throws BaseException
+     * @throws \Exception
      */
-    public function store(array $data): bool
+    public function store(object $data): bool
     {
-        parent::makeValidation([
-            $data->title => 'str',
-            $data->content => 'str',
-            $data->category_id => 'int',
-            $data->description => 'str',
-            $data->keywords => 'str',
-            $data->url => 'str',
-        ]);
+        $article = $data->article;
+        parent::makeValidation([]);
 
         $db = Db::getConnection();
-        $sql = 'INSERT INTO articles (title, content, category, description, keywords, create_date) 
-                VALUES (:title, :content, :category, :description, :keywords, UNIX_TIMESTAMP())';
+        $sql = 'INSERT INTO articles (title, content, description, keywords, create_date) 
+                VALUES (:title, :content, :description, :keywords, UNIX_TIMESTAMP())';
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(':title', $data->title, PDO::PARAM_STR);
-        $stmt->bindParam(':content', $data->content, PDO::PARAM_STR);
-        $stmt->bindParam(':category', $data->category, PDO::PARAM_INT);
-        $stmt->bindParam(':description', $data->description, PDO::PARAM_STR);
-        $stmt->bindParam(':keywords', $data->keywords, PDO::PARAM_STR);
-        $stmt->execute();
+        $stmt->bindParam(':title', $article->title, PDO::PARAM_STR);
+        $stmt->bindParam(':content', $article->content, PDO::PARAM_STR);
+        $stmt->bindParam(':description', $article->metaDescription, PDO::PARAM_STR);
+        $stmt->bindParam(':keywords', $article->metaKeywords, PDO::PARAM_STR);
 
-        if (! empty($data->url)) {
-            $articleId = $db->lastInsertId();
-            $linkId = parent::createLink($data->url, "site/article/$articleId");
-
-            $sql = 'UPDATE articles SET link_id = :link_id WHERE id = :id';
-            $stmt = $db->prepare($sql);
-            $stmt->bindParam(':link_id', $linkId, PDO::PARAM_INT);
-            $stmt->bindParam(':id', $articleId, PDO::PARAM_INT);
-            $stmt->execute();
-        }
-        return true;
+        return $stmt->execute();
     }
 
     /**
@@ -136,7 +112,7 @@ class Article extends Model implements Action
      * @return bool
      * @throws BaseException
      */
-    public function update($id, array $data): bool
+    public function update($id, object $data): bool
     {
         parent::makeValidation([
             $data->title => 'str',
@@ -228,7 +204,7 @@ class Article extends Model implements Action
      * @return array|null
      * @throws \Exception
      */
-    public function search(array $data): ?array
+    public function search(object $data): ?array
     {
         $db = Db::getConnection();
         $sql = 'SELECT articles.id AS "id",

@@ -43,9 +43,19 @@ class ArticleController extends Controller
             $page = intval($data->page);
         }
 
-        $data = $this->instance->getAll($page);
+        $data = $this->instance->showAll($page);
 
         return $this->view('site.articles', $data);
+    }
+
+    /**
+     * @return array|null
+     * @throws \Exception
+     */
+    public function listing() : ?array
+    {
+        $page = 1;
+        return $this->instance->showAll($page);
     }
 
     /**
@@ -57,7 +67,7 @@ class ArticleController extends Controller
     public function show($id) : object
     {
         $data = array(
-            $this->instance->get($id)
+            $this->instance->show($id)
         );
 
         return $this->view('site.article', $data);
@@ -74,7 +84,7 @@ class ArticleController extends Controller
 
         parent::checkAccess($data->token);
 
-        return $this->instance->create($data);
+        return $this->instance->store($data);
     }
 
     /**
@@ -88,7 +98,7 @@ class ArticleController extends Controller
 
         parent::checkAccess($data->token);
 
-        return $this->instance->edit($data->id, $data);
+        return $this->instance->update($data->id, $data);
     }
 
     /**
@@ -102,7 +112,7 @@ class ArticleController extends Controller
 
         parent::checkAccess($data->token);
 
-        return $this->instance->delete($data->id);
+        return $this->instance->destroy($data->id);
     }
 
     /**

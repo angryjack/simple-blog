@@ -40,7 +40,7 @@ class AdminController extends Controller
 
         parent::checkAccess($token);
 
-        return $this->adminView('admin.index');
+        return $this->adminView('admin.article');
     }
 
     /**
