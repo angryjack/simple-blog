@@ -23,7 +23,7 @@ class AdminController extends Controller
      * Метод входа в админ панель
      * throws \Exception - критические ошибки, даем на откуп нашему глобальному обработчику ошибок
      */
-    public function doLogin()
+    public function signIn()
     {
         $data = parent::getData(false);
         $token = (new User)->login($data->login, $data->password);

@@ -21,7 +21,7 @@ class User extends Model
     {
         $user = self::checkUserExist($login);
 
-        if (password_verify($passwd, $user->passwd)) {
+        if (! empty($user) && password_verify($passwd, $user->passwd)) {
             return parent::generateToken($login);
         }
         return null;

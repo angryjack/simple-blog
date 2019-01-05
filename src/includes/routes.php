@@ -19,6 +19,7 @@ return array(
     'admin/articles' => 'admin/articles',
     'admin/categories' => 'admin/categories',
     'admin/login' => 'admin/login',
+    'admin/signIn' => 'admin/signIn',
     'admin' => 'admin/index',
 
     /* Install */
