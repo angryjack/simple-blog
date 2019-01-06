@@ -25,7 +25,8 @@ class AdminController extends Controller
      */
     public function signIn()
     {
-        $data = parent::getData(false);
+        $data = $this->getData(false);
+
         $token = (new User)->login($data->login, $data->password);
 
         return ['token' => $token];
@@ -36,9 +37,9 @@ class AdminController extends Controller
     */
     public function index()
     {
-        $token = parent::getTokenFromCookie();
+        $token = $this->getTokenFromCookie();
 
-        parent::checkAccess($token);
+        $this->checkAccess($token);
 
         return $this->adminView('admin.article');
     }
@@ -48,11 +49,10 @@ class AdminController extends Controller
      */
     public function articles()
     {
-        $token = parent::getTokenFromCookie();
+        $token = $this->getTokenFromCookie();
 
-        parent::checkAccess($token);
+        $this->checkAccess($token);
 
         return $this->adminView('admin.article.article');
     }
-
 }
