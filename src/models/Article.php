@@ -34,16 +34,15 @@ class Article extends Model implements Action
         $limit = 20;
         $offset = ($page - 1) * $limit;
 
-        $db = Db::getConnection();
-
         $sql = 'SELECT articles.id AS "id",
                        articles.title AS "title",
                        articles.content AS "content"                       
                 FROM articles
                 ORDER BY id DESC
                 LIMIT :limit OFFSET :offset';
-        $stmt = $db->prepare($sql);
 
+        $db = Db::getConnection();
+        $stmt = $db->prepare($sql);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->setFetchMode(PDO::FETCH_OBJ);
@@ -60,21 +59,16 @@ class Article extends Model implements Action
      */
     public function show($id): ?object
     {
-        $db = Db::getConnection();
         $sql = 'SELECT articles.id AS "id",
                        articles.title AS "title",
                        articles.content AS "content",
-                       routes.url AS "url",
                        articles.description AS "description",
-                       articles.keywords AS "keywords",
-                       categories.id AS "category_id",
-                       categories.title AS "category"
-                FROM articles 
-                LEFT JOIN categories ON articles.category = categories.id
-                LEFT JOIN routes ON articles.link_id = routes.id
+                       articles.keywords AS "keywords"
+                FROM articles
                 WHERE articles.id = :id';
-        $stmt = $db->prepare($sql);
 
+        $db = Db::getConnection();
+        $stmt = $db->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->setFetchMode(PDO::FETCH_OBJ);
         $stmt->execute();
@@ -91,11 +85,15 @@ class Article extends Model implements Action
     public function store(object $data): bool
     {
         $article = $data->article;
-        parent::makeValidation([]);
 
-        $db = Db::getConnection();
+        $this->makeValidation([
+            //
+        ]);
+
         $sql = 'INSERT INTO articles (title, content, description, keywords, create_date) 
                 VALUES (:title, :content, :description, :keywords, UNIX_TIMESTAMP())';
+
+        $db = Db::getConnection();
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':title', $article->title, PDO::PARAM_STR);
         $stmt->bindParam(':content', $article->content, PDO::PARAM_STR);
@@ -108,72 +106,34 @@ class Article extends Model implements Action
     /**
      * Редактируем статью
      * @param $id
-     * @param array $data
+     * @param object $data
      * @return bool
-     * @throws BaseException
+     * @throws \Exception
      */
     public function update($id, object $data): bool
     {
-        parent::makeValidation([
-            $data->title => 'str',
-            $data->content => 'str',
-            $data->category_id => 'int',
-            $data->description => 'str',
-            $data->keywords => 'str',
-            $data->url => 'str',
+        $article = $data->article;
+
+        $this->makeValidation([
+            //$article->title => 'str',
         ]);
 
-        $db = Db::getConnection();
         $sql = 'UPDATE articles 
                 SET title = :title,
                     content = :content,
-                    category = :category,
                     description = :description,
                     keywords = :keywords
                 WHERE id = :id';
+
+        $db = Db::getConnection();
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(':title', $data->title, PDO::PARAM_STR);
-        $stmt->bindParam(':content', $data->content, PDO::PARAM_STR);
-        $stmt->bindParam(':category', $data->category, PDO::PARAM_INT);
-        $stmt->bindParam(':description', $data->description, PDO::PARAM_STR);
-        $stmt->bindParam(':keywords', $data->keywords, PDO::PARAM_STR);
+        $stmt->bindParam(':title', $article->title, PDO::PARAM_STR);
+        $stmt->bindParam(':content', $article->content, PDO::PARAM_STR);
+        $stmt->bindParam(':description', $article->description, PDO::PARAM_STR);
+        $stmt->bindParam(':keywords', $article->keywords, PDO::PARAM_STR);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
 
-        if (! empty($data->url)) {
-            $article = $this->get($id);
-
-            $link = self::checkLinkExistence($data->url);
-
-            if ($link && $article->url != $data->url) {
-                throw new BaseException('Данная ссылка уже занята.');
-            }
-
-            if ($link == null) {
-                $linkId = parent::createLink($data->url, "site/article/$id");
-
-                $sql = 'UPDATE articles SET link_id = :link_id WHERE id = :id';
-                $stmt = $db->prepare($sql);
-                $stmt->bindParam(':link_id', $linkId, PDO::PARAM_INT);
-                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-                $stmt->execute();
-            } elseif (empty($data->url)) {
-                $db = Db::getConnection();
-                $sql = 'DELETE FROM routes WHERE id = (SELECT link_id FROM articles WHERE id = :id)';
-                $stmt = $db->prepare($sql);
-                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-                $stmt->execute();
-
-                $sql = 'UPDATE articles SET link_id = NULL WHERE id = :id';
-                $stmt = $db->prepare($sql);
-                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-                $stmt->execute();
-            } else {
-                parent::updateLink($data->url, $link->id);
-            }
-        }
-
-        return true;
+        return $stmt->execute();
     }
 
     /**
@@ -184,14 +144,9 @@ class Article extends Model implements Action
      */
     public function destroy($id): bool
     {
-        $article = $this->get($id);
-
-        if (! empty($article->url)) {
-            parent::deleteLink($article->url);
-        }
+        $sql = 'DELETE FROM articles WHERE id = :id';
 
         $db = Db::getConnection();
-        $sql = 'DELETE FROM articles WHERE id = :id';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
@@ -200,25 +155,26 @@ class Article extends Model implements Action
 
     /**
      * Поиск по статьям
-     * @param array $data
+     * @param object $data
      * @return array|null
      * @throws \Exception
      */
     public function search(object $data): ?array
     {
-        $db = Db::getConnection();
+        $this->makeValidation([
+            //$data->search
+        ]);
+
         $sql = 'SELECT articles.id AS "id",
-                   articles.title AS "title",
-                   articles.content AS "content",
-                   categories.title AS "category",
-                   routes.url AS "url"
-            FROM articles
-            LEFT JOIN categories ON articles.category = categories.id
-            LEFT JOIN routes ON articles.link_id = routes.id
-            WHERE articles.title LIKE :search
-            ORDER BY title ASC';
+                       articles.title AS "title",
+                       articles.content AS "content"
+                FROM articles
+                WHERE articles.title LIKE :search
+                ORDER BY title ASC';
+
+        $db = Db::getConnection();
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(':search', "%$data%", PDO::PARAM_STR);
+        $stmt->bindValue(':search', "%$data->search%", PDO::PARAM_STR);
         $stmt->setFetchMode(PDO::FETCH_OBJ);
         $stmt->execute();
 
