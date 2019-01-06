@@ -23,9 +23,7 @@ class ArticleController extends Controller
      */
     public function __construct()
     {
-        // получаем данные
-        $this->data = parent::getData();
-        // создаем объект статьи
+        $this->data = $this->getData();
         $this->instance = new Article();
     }
 
@@ -76,29 +74,30 @@ class ArticleController extends Controller
     /**
      * Создать статью
      * @return bool
-     * @throws \Angryjack\exceptions\BaseException
+     * @throws \Exception
      */
     public function store() : bool
     {
         $data = $this->data;
 
-        parent::checkAccess($data->token);
+        $this->checkAccess($data->token);
 
         return $this->instance->store($data);
     }
 
     /**
      * Редактировать статью
+     * @param $id
      * @return bool
-     * @throws \Angryjack\exceptions\BaseException
+     * @throws \Exception
      */
     public function update($id) : bool
     {
         $data = $this->data;
 
-        parent::checkAccess($data->token);
+        $this->checkAccess($data->token);
 
-        return $this->instance->update($data->id, $data);
+        return $this->instance->update($id, $data);
     }
 
     /**
@@ -110,7 +109,7 @@ class ArticleController extends Controller
     {
         $data = $this->data;
 
-        parent::checkAccess($data->token);
+        $this->checkAccess($data->token);
 
         return $this->instance->destroy($data->id);
     }

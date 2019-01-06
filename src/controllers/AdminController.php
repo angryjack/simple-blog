@@ -46,9 +46,8 @@ class AdminController extends Controller
     /**
      * Страница управления статьями
      */
-    public function article()
+    public function articles()
     {
-        //todo назвать метод manageArticles
         $token = parent::getTokenFromCookie();
 
         parent::checkAccess($token);
@@ -56,15 +55,4 @@ class AdminController extends Controller
         return $this->adminView('admin.article.article');
     }
 
-    /**
-     * Страница управления категориями
-     */
-    public function category()
-    {
-        $token = parent::getTokenFromCookie();
-
-        parent::checkAccess($token);
-
-        return $this->adminView('admin.category.category');
-    }
 }

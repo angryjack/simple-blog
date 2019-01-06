@@ -30,7 +30,6 @@ class Article extends Model implements Action
      */
     public function showAll($page = 1): ?array
     {
-        $page = intval($page);
         $limit = 20;
         $offset = ($page - 1) * $limit;
 

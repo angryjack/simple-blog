@@ -6,31 +6,14 @@
 
 namespace Angryjack\models;
 
-
-class ArticleTest extends \PHPUnit\Framework\TestCase
+final class ArticleTest extends \PHPUnit\Framework\TestCase
 {
-
-    public function testSearch()
-    {
-
-    }
-
-    public function testDestroy()
-    {
-
-    }
-
-    public function test__construct()
+    public function testShowAll()
     {
 
     }
 
     public function testShow()
-    {
-
-    }
-
-    public function testShowAll()
     {
 
     }
@@ -41,6 +24,16 @@ class ArticleTest extends \PHPUnit\Framework\TestCase
     }
 
     public function testUpdate()
+    {
+
+    }
+
+    public function testDestroy()
+    {
+
+    }
+
+    public function testSearch()
     {
 
     }
