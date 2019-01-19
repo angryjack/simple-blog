@@ -4,13 +4,13 @@
  * Date: 2019-01-07 18:10
  */
 
-namespace Angryjack\helpers;
+namespace Angryjack\tests\helpers;
 
-require_once "../../src/autoload.php";
+require_once __DIR__ . '/../../src/autoload.php';
 
 use Angryjack\models\Article;
 
-class ValidateTest extends \PHPUnit_Framework_TestCase
+class ValidateTest extends \PHPUnit\Framework\TestCase
 {
 
     public function testMakeValidation()

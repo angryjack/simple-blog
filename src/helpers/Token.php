@@ -17,7 +17,7 @@ trait Token
      * @return string - возвращаем сгенерированный токен
      * @throws \Exception - ошибка при генерации токена
      */
-    protected static function generateToken($login)
+    protected function generateToken($login)
     {
         $token = md5(mt_rand());
 
@@ -39,7 +39,7 @@ trait Token
      * @return bool - результат проверки прав
      * @throws
      */
-    public static function checkAccess($token)
+    public function checkAccess($token)
     {
         if ($token) {
             $db = Db::getConnection();
@@ -64,7 +64,7 @@ trait Token
      * Метод нужен для проверки доступа перед отображением страниц админ панели
      * @return string|bool возращает либо токен либо false если токена нет
      */
-    public static function getTokenFromCookie()
+    public function getTokenFromCookie()
     {
         if (isset($_COOKIE['token'])) {
             return $_COOKIE['token'];
