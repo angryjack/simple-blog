@@ -18,7 +18,7 @@ trait Link
      * @return array
      * @throws \Exception
      */
-    public static function checkLinkExistence($url) : array
+    public function checkLinkExistence($url) : array
     {
         $db = Db::getConnection();
         $sql = 'SELECT id, url FROM routes WHERE url = :url';
@@ -35,7 +35,7 @@ trait Link
      * @return int ИД созданной сслыки
      * @throws BaseException
      */
-    public static function createLink($url, $internalRoute) : int
+    public function createLink($url, $internalRoute) : int
     {
         if (self::checkLinkExistence($url)) {
             throw new BaseException('Ссылка уже существует.');
@@ -58,7 +58,7 @@ trait Link
      * @return int
      * @throws \Exception
      */
-    public static function updateLink($url, $id) : int
+    public function updateLink($url, $id) : int
     {
         $db = Db::getConnection();
         $sql = 'UPDATE routes SET url = :url WHERE id = :id';
@@ -74,7 +74,7 @@ trait Link
      * @return bool
      * @throws \Exception
      */
-    public static function deleteLink($id) : bool
+    public function deleteLink($id) : bool
     {
         $db = Db::getConnection();
         $sql = 'DELETE FROM routes WHERE id = :link_id';
