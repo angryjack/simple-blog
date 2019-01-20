@@ -13,7 +13,7 @@ trait Request
      * @param bool $assoc тип возращаемого значения
      * @return mixed
      */
-    public static function getData($assoc = false)
+    public function getData($assoc = false)
     {
         $data = file_get_contents('php://input');
         return json_decode($data, $assoc);
